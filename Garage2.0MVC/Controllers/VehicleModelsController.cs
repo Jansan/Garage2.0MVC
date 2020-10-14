@@ -58,7 +58,8 @@ namespace Garage2._0MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-               
+
+                //const DateTime parkedTime = vehicleModel.ArrivalTime;
                 vehicleModel.ArrivalTime = DateTime.Now;
                 vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
@@ -99,7 +100,7 @@ namespace Garage2._0MVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,RegNum,Color,Brand,Model,NumWheels,ArrivalTime")] VehicleModel vehicleModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,RegNum,Color,Brand,Model,NumWheels")] VehicleModel vehicleModel)
         {
             if (id != vehicleModel.Id)
             {
@@ -110,7 +111,8 @@ namespace Garage2._0MVC.Controllers
             {
                 try
                 {
-                    db.Update(vehicleModel);
+                    db.Entry(vehicleModel).State = EntityState.Modified;
+                    db.Entry(vehicleModel).Property(v => v.ArrivalTime).IsModified = false;
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
