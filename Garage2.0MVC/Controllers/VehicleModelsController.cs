@@ -58,12 +58,23 @@ namespace Garage2._0MVC.Controllers
         {
             if (ModelState.IsValid)
             {
+               
                 vehicleModel.ArrivalTime = DateTime.Now;
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicleModel);
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult UniqueRegNum(string regNum)
+        {
+            if (db.VehicleModel.Any(v => v.RegNum == regNum))
+            {
+                return Json($"That registration number already is among the parked vehicles.");
+            }
+            return Json(true);
         }
 
         // GET: VehicleModels/Edit/5
