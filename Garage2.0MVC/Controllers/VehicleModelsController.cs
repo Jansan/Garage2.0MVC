@@ -60,6 +60,7 @@ namespace Garage2._0MVC.Controllers
             {
                
                 vehicleModel.ArrivalTime = DateTime.Now;
+                vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
