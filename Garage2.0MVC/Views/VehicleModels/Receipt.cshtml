@@ -1,0 +1,17 @@
+﻿@model Garage2._0MVC.Models.VehicleModel
+
+@{
+    ViewData["Title"] = "Receipt";
+}
+
+<h1>Receipt</h1>
+<h4>Reg Number: @Model.RegNum</h4>
+<h4>Arrival Time: @Model.ArrivalTime</h4>
+<h4>Leave Time: </h4>
+<h4>Price: </h4>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger mt-3">Go Back</button>
+</form>
+

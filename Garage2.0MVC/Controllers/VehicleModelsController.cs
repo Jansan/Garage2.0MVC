@@ -143,8 +143,25 @@ namespace Garage2._0MVC.Controllers
             var vehicleModel = await db.VehicleModel.FindAsync(id);
             db.VehicleModel.Remove(vehicleModel);
             await db.SaveChangesAsync();
-            // Redirect to Ask About Receipt
             return RedirectToAction(nameof(Index));
+        }
+
+
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicleModel = await db.VehicleModel.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (vehicleModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(vehicleModel);
         }
 
         private bool VehicleModelExists(int id)
