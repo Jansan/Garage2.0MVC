@@ -158,6 +158,24 @@ namespace Garage2._0MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicleModel = await db.VehicleModel.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (vehicleModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(vehicleModel);
+        }
+
         private bool VehicleModelExists(int id)
         {
             return db.VehicleModel.Any(e => e.Id == id);
