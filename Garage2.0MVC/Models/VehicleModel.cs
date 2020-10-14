@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Garage2._0MVC.Models
 {
@@ -17,6 +18,7 @@ namespace Garage2._0MVC.Models
         [Required]
         [DisplayName("Registration Number")]
         [StringLength(maximumLength: 6, MinimumLength = 6)]
+        [Remote(action: "UniqueRegNum", controller: "VehicleModels")]
         public string RegNum { get; set; }
 
         [Required]
