@@ -110,7 +110,8 @@ namespace Garage2._0MVC.Controllers
             {
                 try
                 {
-                    db.Update(vehicleModel);
+                    db.Entry(vehicleModel).State = EntityState.Modified;
+                    db.Entry(vehicleModel).Property(v => v.ArrivalTime).IsModified = false; 
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
