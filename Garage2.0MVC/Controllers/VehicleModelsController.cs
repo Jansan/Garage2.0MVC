@@ -74,12 +74,24 @@ namespace Garage2._0MVC.Controllers
         {
             if (ModelState.IsValid)
             {
+               
                 vehicleModel.ArrivalTime = DateTime.Now;
+                vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicleModel);
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult UniqueRegNum(string regNum)
+        {
+            if (db.VehicleModel.Any(v => v.RegNum == regNum))
+            {
+                return Json($"That registration number already is among the parked vehicles.");
+            }
+            return Json(true);
         }
 
         // GET: VehicleModels/Edit/5
@@ -114,7 +126,8 @@ namespace Garage2._0MVC.Controllers
             {
                 try
                 {
-                    db.Update(vehicleModel);
+                    db.Entry(vehicleModel).State = EntityState.Modified;
+                    db.Entry(vehicleModel).Property(v => v.ArrivalTime).IsModified = false; 
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -160,6 +173,24 @@ namespace Garage2._0MVC.Controllers
             db.VehicleModel.Remove(vehicleModel);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicleModel = await db.VehicleModel.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (vehicleModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(vehicleModel);
         }
 
         private bool VehicleModelExists(int id)
