@@ -8,9 +8,8 @@ namespace Garage2._0MVC.Models.ViewModels
 {
     public class VehicleViewModel
     {
-        public IEnumerable<VehicleModel> VehicleModels { get; set; }
-        public IEnumerable<SelectListItem> VehicleTypes { get; set; }
-        public VehicleType? VehicleType { get; set; }
+       
+        public VehicleType VehicleType { get; set; }
         public string RegNum { get; set; }
         public DateTime ArrivalTime { get; set; }
 
