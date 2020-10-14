@@ -143,6 +143,7 @@ namespace Garage2._0MVC.Controllers
             var vehicleModel = await db.VehicleModel.FindAsync(id);
             db.VehicleModel.Remove(vehicleModel);
             await db.SaveChangesAsync();
+            // Redirect to Ask About Receipt
             return RedirectToAction(nameof(Index));
         }
 
