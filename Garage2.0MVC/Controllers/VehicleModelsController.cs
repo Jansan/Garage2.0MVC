@@ -58,6 +58,7 @@ namespace Garage2._0MVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                vehicleModel.ArrivalTime = DateTime.Now;
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
