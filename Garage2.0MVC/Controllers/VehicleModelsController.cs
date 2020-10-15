@@ -37,10 +37,10 @@ namespace Garage2._0MVC.Controllers
                 ArrivalTime = v.ArrivalTime
             }).ToListAsync();
 
-            return  View(model);
+            return View(model);
         }
 
-        
+
 
         // GET: VehicleModels/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -75,7 +75,7 @@ namespace Garage2._0MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-               
+
                 vehicleModel.ArrivalTime = DateTime.Now;
                 vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
@@ -103,7 +103,17 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await db.VehicleModel.FindAsync(id);
+            var vehicleModel = await db.VehicleModel
+                .Select(e => new EditViewModel
+                {
+                    Id = e.Id,
+                    Type = e.Type,
+                    Color = e.Color,
+                    Brand = e.Brand,
+                    Model = e.Model,
+                    NumWheels = e.NumWheels
+                }).FirstOrDefaultAsync(v => v.Id == id);
+            
             if (vehicleModel == null)
             {
                 return NotFound();
@@ -116,24 +126,37 @@ namespace Garage2._0MVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,RegNum,Color,Brand,Model,NumWheels,ArrivalTime")] VehicleModel vehicleModel)
-        {
-            if (id != vehicleModel.Id)
+        public async Task<IActionResult> Edit(int id, EditViewModel editViewModel)
+        {       //TODO kan ta bort vehiclemodel och ha istället editviewmodel?
+            if (id != editViewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var vehicle = new VehicleModel
+                {
+                    Id = editViewModel.Id,
+                    Type = editViewModel.Type,
+                    Color = editViewModel.Color,
+                    Brand = editViewModel.Brand,
+                    Model = editViewModel.Model,
+                    NumWheels = editViewModel.NumWheels
+                };
                 try
                 {
-                    db.Entry(vehicleModel).State = EntityState.Modified;
-                    db.Entry(vehicleModel).Property(v => v.ArrivalTime).IsModified = false; 
+                    db.Entry(vehicle).State = EntityState.Modified;
+                    db.Entry(vehicle).Property(v => v.ArrivalTime).IsModified = false;
+                    db.Entry(vehicle).Property(v => v.RegNum).IsModified = false;
+
                     await db.SaveChangesAsync();
+                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VehicleModelExists(vehicleModel.Id))
+                    if (!VehicleModelExists(vehicle.Id))
                     {
                         return NotFound();
                     }
@@ -144,7 +167,7 @@ namespace Garage2._0MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicleModel);
+            return View(editViewModel);
         }
 
         // GET: VehicleModels/Delete/5
