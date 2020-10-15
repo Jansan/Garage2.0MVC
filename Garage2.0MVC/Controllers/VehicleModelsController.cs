@@ -75,7 +75,7 @@ namespace Garage2._0MVC.Controllers
             else
             {
                 model = db.VehicleModel
-                    .Where(v => v.RegNum == regNum)
+                    .Where(v => v.RegNum.Contains(regNum))
                     .Select(v => new VehicleViewModel
                 {
                     VehicleType = v.Type,
@@ -85,6 +85,12 @@ namespace Garage2._0MVC.Controllers
             }
             
             return View(nameof(Vehicles), await model.ToListAsync());
+        }
+
+        public async Task<IActionResult> Statistics()
+        {
+            var model = db.VehicleModel;
+            return View(nameof(Vehicles), await model.ToListAsync()); 
         }
 
         // GET: VehicleModels/Create
