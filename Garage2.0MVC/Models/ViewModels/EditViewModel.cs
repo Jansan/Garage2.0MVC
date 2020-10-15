@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Garage2._0MVC.Models
+namespace Garage2._0MVC.Models.ViewModels
 {
     public class EditViewModel
     {

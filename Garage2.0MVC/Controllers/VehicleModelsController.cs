@@ -36,10 +36,10 @@ namespace Garage2._0MVC.Controllers
                 ArrivalTime = v.ArrivalTime
             }).ToListAsync();
 
-            return  View(model);
+            return View(model);
         }
 
-        
+
 
         // GET: VehicleModels/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -75,7 +75,6 @@ namespace Garage2._0MVC.Controllers
             if (ModelState.IsValid)
             {
 
-                //const DateTime parkedTime = vehicleModel.ArrivalTime;
                 vehicleModel.ArrivalTime = DateTime.Now;
                 vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
@@ -103,7 +102,15 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await db.VehicleModel.FindAsync(id);
+            var vehicleModel = await db.VehicleModel.Where(v=>v.Id == id)
+                .Select(e=>new EditViewModel {
+                    Type = e.Type,
+                    Color = e.Color,
+                    Brand = e.Brand,
+                    Model = e.Model,
+                    NumWheels = e.NumWheels
+                }).ToListAsync();
+            
             if (vehicleModel == null)
             {
                 return NotFound();
@@ -117,7 +124,7 @@ namespace Garage2._0MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Type,RegNum,Color,Brand,Model,NumWheels")] VehicleModel vehicleModel)
-        {
+        {       //TODO kan ta bort vehiclemodel och ha istället editviewmodel?
             if (id != vehicleModel.Id)
             {
                 return NotFound();
@@ -130,6 +137,17 @@ namespace Garage2._0MVC.Controllers
                     db.Entry(vehicleModel).State = EntityState.Modified;
                     db.Entry(vehicleModel).Property(v => v.ArrivalTime).IsModified = false;
                     await db.SaveChangesAsync();
+                    var newModel = db.VehicleModel.Where(v => v.Id == id)
+                        .Select(v => new EditViewModel
+                        {
+                            Type = v.Type,
+                            Color = v.Color,
+                            Brand = v.Brand,
+                            Model = v.Model,
+                            NumWheels = v.NumWheels
+
+                        });
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
