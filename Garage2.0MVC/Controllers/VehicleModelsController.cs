@@ -80,6 +80,7 @@ namespace Garage2._0MVC.Controllers
                 vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
+                ViewBag.Success = "Success Parkvehicle";
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicleModel);
