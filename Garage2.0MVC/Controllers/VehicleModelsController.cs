@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
+using Garage2._0MVC.Models.ViewModels;
 
 namespace Garage2._0MVC.Controllers
 {
@@ -24,6 +25,21 @@ namespace Garage2._0MVC.Controllers
         {
             return View(await db.VehicleModel.ToListAsync());
         }
+
+        // GET: Vehicles
+        public async Task<IActionResult> Vehicles()
+        {
+            var model = await db.VehicleModel.Select(v => new VehicleViewModel
+            {
+                VehicleType = v.Type,
+                RegNum = v.RegNum,
+                ArrivalTime = v.ArrivalTime
+            }).ToListAsync();
+
+            return  View(model);
+        }
+
+        
 
         // GET: VehicleModels/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -158,6 +174,24 @@ namespace Garage2._0MVC.Controllers
             db.VehicleModel.Remove(vehicleModel);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicleModel = await db.VehicleModel.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (vehicleModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(vehicleModel);
         }
 
         private bool VehicleModelExists(int id)
