@@ -5,11 +5,6 @@
 }
 
 <h1>Receipt</h1>
-@*<h4>Depature Time: </h4> Get ReceiptViewComponent GetDeparture() || Returns Datetime.Now()
-@*<h4>Total Time: </h4> Get ReceiptViewComponent TotalTime() || Returns vehicle.arrivaltime - departuretime in minutes
-<h4>Price: </h4> ReceiptViewComponent Price() || Returns Total Time in minutes * Price
- *@
-
 
 <div>
     <hr />
@@ -26,7 +21,7 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ArrivalTime)
         </dd>
-        <vc:receipt/>
+        <vc:receipt vehicle-id="@Model.Id"/>
     </dl>
 </div>
 
