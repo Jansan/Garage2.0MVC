@@ -102,7 +102,7 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await db.VehicleModel
+            var editViewModel = await db.VehicleModel
                 .Select(e => new EditViewModel
                 {
                     Id = e.Id,
@@ -113,11 +113,11 @@ namespace Garage2._0MVC.Controllers
                     NumWheels = e.NumWheels
                 }).FirstOrDefaultAsync(v => v.Id == id);
             
-            if (vehicleModel == null)
+            if (editViewModel == null)
             {
                 return NotFound();
             }
-            return View(vehicleModel);
+            return View(editViewModel);
         }
 
         // POST: VehicleModels/Edit/5
