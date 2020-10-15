@@ -5,13 +5,28 @@
 }
 
 <h1>Receipt</h1>
-<h4>Reg Number: @Model.RegNum</h4>
-<h4>Arrival Time: @Model.ArrivalTime</h4>
-<h4>Leave Time: </h4>
-<h4>Price: </h4>
 
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger mt-3">Go Back</button>
-</form>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RegNum)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RegNum)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ArrivalTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ArrivalTime)
+        </dd>
+        <vc:receipt vehicle-id="@Model.Id"/>
+    </dl>
+</div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger mt-3">Go Back</button>
+    </form>
 
