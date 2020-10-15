@@ -38,6 +38,7 @@ namespace Garage2._0MVC.Models
         [Range(4, 20)]
         public int NumWheels { get; set; }
         
+        [DisplayName("Arrival Time")]
         public DateTime ArrivalTime { get; set; }
     }
 }

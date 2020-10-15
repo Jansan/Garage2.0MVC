@@ -31,6 +31,7 @@ namespace Garage2._0MVC.Controllers
         {
             var model = await db.VehicleModel.Select(v => new VehicleViewModel
             {
+                Id = v.Id,
                 VehicleType = v.Type,
                 RegNum = v.RegNum,
                 ArrivalTime = v.ArrivalTime

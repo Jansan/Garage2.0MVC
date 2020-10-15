@@ -9,7 +9,8 @@ namespace Garage2._0MVC.Models.ViewModels
 {
     public class VehicleViewModel
     {
-       
+        public int Id { get; set; }
+
         [DisplayName("Vehicle Type")]
         public VehicleType VehicleType { get; set; }
 
