@@ -60,6 +60,33 @@ namespace Garage2._0MVC.Controllers
             return View(vehicleModel);
         }
 
+        public async Task<IActionResult> Filter(string regNum)
+        {
+            IQueryable<VehicleViewModel> model;
+            if (string.IsNullOrWhiteSpace(regNum))
+            {
+                model = db.VehicleModel.Select(v => new VehicleViewModel 
+                {
+                VehicleType = v.Type,
+                ArrivalTime = v.ArrivalTime,
+                RegNum = v.RegNum
+                });
+            }
+            else
+            {
+                model = db.VehicleModel
+                    .Where(v => v.RegNum == regNum)
+                    .Select(v => new VehicleViewModel
+                {
+                    VehicleType = v.Type,
+                    ArrivalTime = v.ArrivalTime,
+                    RegNum = v.RegNum
+                });
+            }
+            
+            return View(nameof(Vehicles), await model.ToListAsync());
+        }
+
         // GET: VehicleModels/Create
         public IActionResult Create()
         {
