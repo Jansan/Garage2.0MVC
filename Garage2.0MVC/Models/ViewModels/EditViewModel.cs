@@ -10,6 +10,7 @@ namespace Garage2._0MVC.Models.ViewModels
 {
     public class EditViewModel
     {
+        public int Id { get; set; }
         public VehicleType Type { get; set; }
 
         [Required]
