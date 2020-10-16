@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage2._0MVC.Models.ViewModels.VehicleViewModel>
+﻿@model Garage2._0MVC.Models.ViewModels.VehiclesCollectionViewModel
 
 
 @{
@@ -20,24 +20,35 @@
     </div>
 </form>
 
+@*<partial name="ParkingSpacesLeftPartial" />*@
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.ParkingSpacesLeft)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.ParkingSpacesLeft)
+    </dd>
+</dl>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
+               Vehicle Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RegNum)
+                Registration number
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.ArrivalTime)
+               Arrival time
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Vehicles)
         {
             <tr>
                 <td>

@@ -29,15 +29,20 @@ namespace Garage2._0MVC.Controllers
         // GET: Vehicles
         public async Task<IActionResult> Vehicles()
         {
+            var vCollection = new VehiclesCollectionViewModel();
+            var totalVehicles = db.VehicleModel.Count();
             var model = await db.VehicleModel.Select(v => new VehicleViewModel
             {
                 Id = v.Id,
                 VehicleType = v.Type,
                 RegNum = v.RegNum,
-                ArrivalTime = v.ArrivalTime
+                ArrivalTime = v.ArrivalTime,
             }).ToListAsync();
 
-            return View(model);
+            vCollection.ParkingSpacesLeft = Constants.PARKING_CAPACITY - totalVehicles;
+            vCollection.Vehicles = model;
+
+            return View(vCollection);
         }
 
 
@@ -65,11 +70,11 @@ namespace Garage2._0MVC.Controllers
             IQueryable<VehicleViewModel> model;
             if (string.IsNullOrWhiteSpace(regNum))
             {
-                model = db.VehicleModel.Select(v => new VehicleViewModel 
+                model = db.VehicleModel.Select(v => new VehicleViewModel
                 {
-                VehicleType = v.Type,
-                ArrivalTime = v.ArrivalTime,
-                RegNum = v.RegNum
+                    VehicleType = v.Type,
+                    ArrivalTime = v.ArrivalTime,
+                    RegNum = v.RegNum
                 });
             }
             else
@@ -77,26 +82,26 @@ namespace Garage2._0MVC.Controllers
                 model = db.VehicleModel
                     .Where(v => v.RegNum.Contains(regNum))
                     .Select(v => new VehicleViewModel
-                {
-                    VehicleType = v.Type,
-                    ArrivalTime = v.ArrivalTime,
-                    RegNum = v.RegNum
-                });
+                    {
+                        VehicleType = v.Type,
+                        ArrivalTime = v.ArrivalTime,
+                        RegNum = v.RegNum
+                    });
             }
-            
+
             return View(nameof(Vehicles), await model.ToListAsync());
         }
 
         public async Task<IActionResult> Statistics()
         {
-          
+
             var model = db.VehicleModel.GroupBy(v => v.Type)
                 .Select(v => new StatisticsViewModel
                 {
                     Type = v.Key,
                     Count = v.Count()
                 }); ;
-            return View(await model.ToListAsync()); 
+            return View(await model.ToListAsync());
         }
 
         // GET: VehicleModels/Create
@@ -152,7 +157,7 @@ namespace Garage2._0MVC.Controllers
                     Model = e.Model,
                     NumWheels = e.NumWheels
                 }).FirstOrDefaultAsync(v => v.Id == id);
-            
+
             if (editViewModel == null)
             {
                 return NotFound();
@@ -190,7 +195,7 @@ namespace Garage2._0MVC.Controllers
                     db.Entry(vehicle).Property(v => v.RegNum).IsModified = false;
 
                     await db.SaveChangesAsync();
-                    
+
 
                 }
                 catch (DbUpdateConcurrencyException)
