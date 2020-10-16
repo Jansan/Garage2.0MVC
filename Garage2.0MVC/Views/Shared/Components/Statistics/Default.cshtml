@@ -1,0 +1,21 @@
+﻿@model StatisticsViewModel
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.TotalWheels)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.TotalWheels)
+    </dd>
+
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.TotalEarnings)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.TotalEarnings) :-
+    </dd>
+</dl>
+
+    <p>
+        <a class="float-right" asp-action="Vehicles">Back to vehicles list</a>
+    </p>
