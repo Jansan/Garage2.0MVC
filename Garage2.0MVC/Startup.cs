@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
+using Rotativa.AspNetCore;
 
 namespace Garage2._0MVC
 {
@@ -57,6 +58,7 @@ namespace Garage2._0MVC
                     name: "default",
                     pattern: "{controller=VehicleModels}/{action=Index}/{id?}");
             });
+            //RotativaConfiguration.Setup(env, "Rotativa");
         }
     }
 }

@@ -5,7 +5,7 @@
 }
 
 <h1>Receipt</h1>
-Joakim Branch
+
 <div>
     <hr />
     <dl class="row">
@@ -21,12 +21,15 @@ Joakim Branch
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ArrivalTime)
         </dd>
-        <vc:receipt vehicle-id="@Model.Id"/>
+        <vc:receipt vehicle-id="@Model.Id" />
     </dl>
 </div>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger mt-3">Go Back</button>
-    </form>
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger mt-3">Go Back</button>
+    @*<input type="submit" asp-action="Print" class="btn btn-primary mt-3" value="Print" />*@
+    @*@Html.ActionLink("Print", "Print")*@
+</form>
+
 

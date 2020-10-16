@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
+using System.Drawing;
+using Rotativa.AspNetCore;
+using Rotativa;
 
 namespace Garage2._0MVC.Controllers
 {
@@ -243,6 +246,32 @@ namespace Garage2._0MVC.Controllers
 
             return View(vehicleModel);
         }
+
+        //public ActionResult Print()
+        //{
+        //    //if (id == null)
+        //    //{
+        //    //    return NotFound();
+        //    //}
+
+        //    //var vehicleModel = db.VehicleModel
+        //    //    .FirstOrDefault(m => m.Id == id);
+        //    //if (vehicleModel == null)
+        //    //{
+        //    //    return NotFound();
+        //    //}
+
+        //    return new ActionAsPdf("Receipt");
+        //}
+        //public ActionResult Print()
+        //{
+        //    return new ViewAsPdf("Receipt")
+        //    {
+        //        FileName = "Receipt.pdf",
+        //        PageOrientation = Orientation.Portrait,
+        //        PageMargins = { Left = 0, Right = 0 }
+        //    };
+        //}
 
         private bool VehicleModelExists(int id)
         {

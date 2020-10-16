@@ -12,4 +12,5 @@ namespace Garage2._0MVC.Models
         Boat,
         Airplane
     }
+    
 }
