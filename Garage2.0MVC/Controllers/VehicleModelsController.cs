@@ -259,36 +259,6 @@ namespace Garage2._0MVC.Controllers
             return View(vehicleModel);
         }
 
-        // Print Function 1
-        //public ActionResult Print()
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var vehicleModel = db.VehicleModel
-        //        .FirstOrDefault(m => m.Id == id);
-        //    if (vehicleModel == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return new ActionAsPdf("Receipt");
-        //}
-
-        // Print Function 2
-        //public ActionResult Print()
-        //{
-        //    return new ViewAsPdf("Receipt")
-        //    {
-        //        FileName = "Receipt.pdf",
-        //        PageOrientation = Orientation.Portrait,
-        //        PageMargins = { Left = 0, Right = 0 }
-        //    };
-        //}
-
-        // Print Function 3
         [MiddlewareFilter(typeof(JsReportPipeline))]
         public async Task<IActionResult> Print(int id)
         {
