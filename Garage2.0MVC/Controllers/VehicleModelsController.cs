@@ -89,8 +89,14 @@ namespace Garage2._0MVC.Controllers
 
         public async Task<IActionResult> Statistics()
         {
-            var model = db.VehicleModel;
-            return View(nameof(Vehicles), await model.ToListAsync()); 
+          
+            var model = db.VehicleModel.GroupBy(v => v.Type)
+                .Select(v => new StatisticsViewModel
+                {
+                    Type = v.Key,
+                    Count = v.Count()
+                }); ;
+            return View(await model.ToListAsync()); 
         }
 
         // GET: VehicleModels/Create
@@ -110,7 +116,7 @@ namespace Garage2._0MVC.Controllers
             {
 
                 vehicleModel.ArrivalTime = DateTime.Now;
-                vehicleModel.RegNum.ToUpper();
+                vehicleModel.RegNum = vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
