@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
+using System.Drawing;
+using jsreport.AspNetCore;
+using jsreport.Types;
 
 namespace Garage2._0MVC.Controllers
 {
@@ -238,7 +241,7 @@ namespace Garage2._0MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        [HttpPost]
         public async Task<IActionResult> Receipt(int? id)
         {
             if (id == null)
@@ -253,6 +256,45 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
+            return View(vehicleModel);
+        }
+
+        // Print Function 1
+        //public ActionResult Print()
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var vehicleModel = db.VehicleModel
+        //        .FirstOrDefault(m => m.Id == id);
+        //    if (vehicleModel == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return new ActionAsPdf("Receipt");
+        //}
+
+        // Print Function 2
+        //public ActionResult Print()
+        //{
+        //    return new ViewAsPdf("Receipt")
+        //    {
+        //        FileName = "Receipt.pdf",
+        //        PageOrientation = Orientation.Portrait,
+        //        PageMargins = { Left = 0, Right = 0 }
+        //    };
+        //}
+
+        // Print Function 3
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> Print(int id)
+        {
+            var vehicleModel = await db.VehicleModel.FindAsync(id);
+
+            HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
             return View(vehicleModel);
         }
 
