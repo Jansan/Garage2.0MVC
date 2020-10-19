@@ -88,9 +88,11 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels/Create
-        public IActionResult Create(bool Issuccess = false)
+        public IActionResult Create(bool isSuccess = false, int id = 0)
         {
-            ViewBag.issuccess = Issuccess;
+            ViewBag.isSuccess = isSuccess;
+            ViewBag.id = id;
+            
             return View();
         }
 
@@ -103,13 +105,13 @@ namespace Garage2._0MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                
                 vehicleModel.ArrivalTime = DateTime.Now;
                 vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
-                ViewBag.Success = "Success Parkvehicle";
-                return RedirectToAction(/*nameof(Index)*/"Create", new { Issuccess = true});
+                
+                return RedirectToAction("Create", new { isSuccess = true, id = vehicleModel.RegNum });
             }
             return View(vehicleModel);
         }

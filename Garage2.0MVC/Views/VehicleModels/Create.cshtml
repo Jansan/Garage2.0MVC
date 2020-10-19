@@ -7,10 +7,14 @@
 <h1>Park vehicle</h1>
 
 @*<h4>VehicleModel</h4>*@
-@if (ViewBag.issuccess)
+@if (ViewBag.isSuccess)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>Park Successful!</strong>
+        <strong>Park Successful! <span></span></strong>
+        <a asp-action="Details" asp-route-id="@ViewBag.id">Details</a>
+        
+        <a asp-controller="VehicleModels" asp-action="Vehicles">Please Check Park Vehicle</a>
+        
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
