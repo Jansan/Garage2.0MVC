@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Garage2._0MVC.Models.ViewModels
 {
-    public class VehiclesCollectionViewModel
+    public class IndexCollectionViewModel
     {
-        public IEnumerable<VehicleViewModel> Vehicles { get; set; }
+        public IEnumerable<VehicleModel> Vehicles { get; set; }
 
         [DisplayName("Parking Spaces Left")]
         public int ParkingSpacesLeft { get; set; }

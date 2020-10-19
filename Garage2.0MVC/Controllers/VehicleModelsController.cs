@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
-
 namespace Garage2._0MVC.Controllers
 {
     public class VehicleModelsController : Controller
     {
         private readonly Garage2_0MVCContext db;
+        public const int PARKING_CAPACITY = 3;
 
         public VehicleModelsController(Garage2_0MVCContext context)
         {
@@ -23,7 +23,12 @@ namespace Garage2._0MVC.Controllers
         // GET: VehicleModels
         public async Task<IActionResult> Index()
         {
-            return View(await db.VehicleModel.ToListAsync());
+            var iCollection = new IndexCollectionViewModel();
+            iCollection.Vehicles = await db.VehicleModel.ToListAsync();
+            var totalVehicles = db.VehicleModel.Count();
+            iCollection.ParkingSpacesLeft = PARKING_CAPACITY - totalVehicles;
+            iCollection.TotalSpaces = PARKING_CAPACITY;
+            return View(iCollection);
         }
 
         // GET: Vehicles
@@ -39,8 +44,9 @@ namespace Garage2._0MVC.Controllers
                 ArrivalTime = v.ArrivalTime,
             }).ToListAsync();
 
-            vCollection.ParkingSpacesLeft = Constants.PARKING_CAPACITY - totalVehicles;
+            vCollection.ParkingSpacesLeft = PARKING_CAPACITY - totalVehicles;
             vCollection.Vehicles = model;
+            vCollection.TotalSpaces = PARKING_CAPACITY;
 
             return View(vCollection);
         }
@@ -64,7 +70,6 @@ namespace Garage2._0MVC.Controllers
 
             return View(vehicleModel);
         }
-
         public async Task<IActionResult> Filter(string regNum)
         {
             IQueryable<VehicleViewModel> model;
@@ -171,7 +176,7 @@ namespace Garage2._0MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditViewModel editViewModel)
-        {       //TODO kan ta bort vehiclemodel och ha istället editviewmodel?
+        {
             if (id != editViewModel.Id)
             {
                 return NotFound();
