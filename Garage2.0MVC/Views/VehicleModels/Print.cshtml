@@ -1,10 +1,10 @@
 ﻿@model Garage2._0MVC.Models.VehicleModel
 
 @{
-    ViewData["Title"] = "Receipt";
+    ViewData["Title"] = "Customer Receipt";
 }
 
-<h1>Receipt</h1>
+<h1>Customer Receipt</h1>
 
 <div>
     <hr />
@@ -24,11 +24,3 @@
         <vc:receipt vehicle-id="@Model.Id" />
     </dl>
 </div>
-
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger mt-3">Go Back</button>
-    <input type="submit" asp-action="Print" formtarget="_blank" class="btn btn-primary mt-3" value="Print" />
-</form>
-
-
