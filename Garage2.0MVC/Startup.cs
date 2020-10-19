@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
+using jsreport.AspNetCore;
+using jsreport.Local;
+using jsreport.Binary;
 
 namespace Garage2._0MVC
 {
@@ -26,6 +29,13 @@ namespace Garage2._0MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            // New NuGet
+            services.AddMvc();
+            services.AddJsReport(new LocalReporting()
+            .UseBinary(JsReportBinary.GetBinary())
+            .AsUtility()
+            .Create());
 
             services.AddDbContext<Garage2_0MVCContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Garage2_0MVCContext")));
@@ -57,6 +67,7 @@ namespace Garage2._0MVC
                     name: "default",
                     pattern: "{controller=VehicleModels}/{action=Index}/{id?}");
             });
+            //RotativaConfiguration.Setup(env, "Rotativa");
         }
     }
 }
