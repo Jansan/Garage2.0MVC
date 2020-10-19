@@ -24,8 +24,9 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool isSuccess = false)
         {
+            ViewBag.isSuccess = isSuccess;
             return View(await db.VehicleModel.ToListAsync());
         }
 
@@ -218,7 +219,7 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool isSuccess = false)
         {
             if (id == null)
             {
@@ -231,7 +232,7 @@ namespace Garage2._0MVC.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.isSuccess = isSuccess;
             return View(vehicleModel);
         }
 
@@ -243,7 +244,7 @@ namespace Garage2._0MVC.Controllers
             var vehicleModel = await db.VehicleModel.FindAsync(id);
             db.VehicleModel.Remove(vehicleModel);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { isSuccess = true});
         }
 
         [HttpPost]
