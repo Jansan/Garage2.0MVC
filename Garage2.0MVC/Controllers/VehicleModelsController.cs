@@ -25,17 +25,22 @@ namespace Garage2._0MVC.Controllers
         {
             var iCollection = new IndexCollectionViewModel();
             iCollection.Vehicles = await db.VehicleModel.ToListAsync();
-            var totalVehicles = db.VehicleModel.Count();
-            iCollection.ParkingSpacesLeft = PARKING_CAPACITY - totalVehicles;
+            iCollection.ParkingSpacesLeft = LeftParkingSpaces();
             iCollection.TotalSpaces = PARKING_CAPACITY;
             return View(iCollection);
+        }
+
+        public int LeftParkingSpaces()
+        {
+            var totalVehicles = db.VehicleModel.Count();
+
+            return PARKING_CAPACITY - totalVehicles;
         }
 
         // GET: Vehicles
         public async Task<IActionResult> Vehicles()
         {
             var vCollection = new VehiclesCollectionViewModel();
-            var totalVehicles = db.VehicleModel.Count();
             var model = await db.VehicleModel.Select(v => new VehicleViewModel
             {
                 Id = v.Id,
@@ -44,7 +49,7 @@ namespace Garage2._0MVC.Controllers
                 ArrivalTime = v.ArrivalTime,
             }).ToListAsync();
 
-            vCollection.ParkingSpacesLeft = PARKING_CAPACITY - totalVehicles;
+            vCollection.ParkingSpacesLeft = LeftParkingSpaces();
             vCollection.Vehicles = model;
             vCollection.TotalSpaces = PARKING_CAPACITY;
 
@@ -93,8 +98,12 @@ namespace Garage2._0MVC.Controllers
                         RegNum = v.RegNum
                     });
             }
+            var vCollection = new VehiclesCollectionViewModel();
+            vCollection.Vehicles = await model.ToListAsync();
+            vCollection.TotalSpaces = PARKING_CAPACITY;
+            vCollection.ParkingSpacesLeft = LeftParkingSpaces();
 
-            return View(nameof(Vehicles), await model.ToListAsync());
+            return View(nameof(Vehicles), vCollection);
         }
 
         public async Task<IActionResult> Statistics()
