@@ -82,6 +82,7 @@ namespace Garage2._0MVC.Controllers
             {
                 model = db.VehicleModel.Select(v => new VehicleViewModel
                 {
+                    Id = v.Id,
                     VehicleType = v.Type,
                     ArrivalTime = v.ArrivalTime,
                     RegNum = v.RegNum
@@ -93,6 +94,7 @@ namespace Garage2._0MVC.Controllers
                     .Where(v => v.RegNum.Contains(regNum))
                     .Select(v => new VehicleViewModel
                     {
+                        Id = v.Id,
                         VehicleType = v.Type,
                         ArrivalTime = v.ArrivalTime,
                         RegNum = v.RegNum
