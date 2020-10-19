@@ -56,6 +56,19 @@ else
     </dd>
 </dl>
 
+@if (ViewBag.isSuccess)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Unpark Successful!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+<p>
+    <a asp-action="Create">Park a vehicle</a>
+</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -117,3 +130,4 @@ else
         }
     </tbody>
 </table>
+

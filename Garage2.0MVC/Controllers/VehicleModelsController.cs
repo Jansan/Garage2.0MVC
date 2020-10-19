@@ -25,7 +25,7 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool isSuccess = false)
         {
             var iCollection = new IndexCollectionViewModel();
             iCollection.Vehicles = await db.VehicleModel.ToListAsync();
@@ -39,6 +39,8 @@ namespace Garage2._0MVC.Controllers
             var totalVehicles = db.VehicleModel.Count();
 
             return PARKING_CAPACITY - totalVehicles;
+            ViewBag.isSuccess = isSuccess;
+            return View(await db.VehicleModel.ToListAsync());
         }
 
         // GET: Vehicles
@@ -125,8 +127,11 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels/Create
-        public IActionResult Create()
+        public IActionResult Create(bool isSuccess = false, string regNum = "")
         {
+            ViewBag.isSuccess = isSuccess;
+            ViewBag.regNum = regNum;
+            
             return View();
         }
 
@@ -139,12 +144,13 @@ namespace Garage2._0MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                
                 vehicleModel.ArrivalTime = DateTime.Now;
                 vehicleModel.RegNum = vehicleModel.RegNum.ToUpper();
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                
+                return RedirectToAction("Create", new { isSuccess = true, regNum = vehicleModel.RegNum });
             }
             return View(vehicleModel);
         }
@@ -160,7 +166,7 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, bool isSuccess = false )
         {
             if (id == null)
             {
@@ -182,6 +188,7 @@ namespace Garage2._0MVC.Controllers
             {
                 return NotFound();
             }
+            ViewBag.isSuccess = isSuccess;
             return View(editViewModel);
         }
 
@@ -229,13 +236,13 @@ namespace Garage2._0MVC.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Edit), new { isSuccess = true});
             }
             return View(editViewModel);
         }
 
         // GET: VehicleModels/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool isSuccess = false)
         {
             if (id == null)
             {
@@ -248,7 +255,7 @@ namespace Garage2._0MVC.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.isSuccess = isSuccess;
             return View(vehicleModel);
         }
 
@@ -260,7 +267,7 @@ namespace Garage2._0MVC.Controllers
             var vehicleModel = await db.VehicleModel.FindAsync(id);
             db.VehicleModel.Remove(vehicleModel);
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { isSuccess = true});
         }
 
         [HttpPost]
@@ -281,35 +288,7 @@ namespace Garage2._0MVC.Controllers
             return View(vehicleModel);
         }
 
-        // Print Function 1
-        //public ActionResult Print()
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var vehicleModel = db.VehicleModel
-        //        .FirstOrDefault(m => m.Id == id);
-        //    if (vehicleModel == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return new ActionAsPdf("Receipt");
-        //}
-
-        // Print Function 2
-        //public ActionResult Print()
-        //{
-        //    return new ViewAsPdf("Receipt")
-        //    {
-        //        FileName = "Receipt.pdf",
-        //        PageOrientation = Orientation.Portrait,
-        //        PageMargins = { Left = 0, Right = 0 }
-        //    };
-        //}
-
+       
         // Print Function 3
         [MiddlewareFilter(typeof(JsReportPipeline))]
         public async Task<IActionResult> Print(int id)
