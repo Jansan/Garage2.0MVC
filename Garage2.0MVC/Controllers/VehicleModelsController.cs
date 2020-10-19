@@ -142,7 +142,7 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, bool isSuccess = false )
         {
             if (id == null)
             {
@@ -164,6 +164,7 @@ namespace Garage2._0MVC.Controllers
             {
                 return NotFound();
             }
+            ViewBag.isSuccess = isSuccess;
             return View(editViewModel);
         }
 
@@ -211,7 +212,7 @@ namespace Garage2._0MVC.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Edit), new { isSuccess = true});
             }
             return View(editViewModel);
         }
