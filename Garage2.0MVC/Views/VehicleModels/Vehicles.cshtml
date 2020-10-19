@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage2._0MVC.Models.ViewModels.VehicleViewModel>
+﻿@model Garage2._0MVC.Models.ViewModels.VehiclesCollectionViewModel
 
 
 @{
@@ -7,9 +7,37 @@
 }
 <h1 class="py-3">Vehicles</h1>
 
-<p>
-    <a asp-action="Create">Park a vehicle</a>
-</p>
+@if (Model.ParkingSpacesLeft > 0)
+{
+    <p>
+        <a asp-action="Create">Park a vehicle</a>
+    </p>
+
+}
+else
+{
+    <p>
+        <a href="myModal" data-toggle="modal" data-target="#myModal">Park a vehicle</a>
+    </p>
+}
+
+<div class="container">
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Parking is full, would you like to unpark?</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="float-right">
+                        <a asp-action="Vehicles">Back to vehicles list</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <form asp-action="Filter">
     <div class="input-group mb-3">
@@ -20,24 +48,43 @@
     </div>
 </form>
 
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.ParkingSpacesLeft)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.ParkingSpacesLeft)
+    </dd>
+</dl>
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.TotalSpaces)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.TotalSpaces)
+    </dd>
+</dl>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
+                Vehicle Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RegNum)
+                Registration number
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.ArrivalTime)
+                Arrival time
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Vehicles)
         {
             <tr>
                 <td>

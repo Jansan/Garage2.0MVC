@@ -20,5 +20,7 @@ namespace Garage2._0MVC.Models.ViewModels
         [DisplayName("Arrival Time")]
         public DateTime ArrivalTime { get; set; }
 
+        [DisplayName("Parking space")]
+        public int ParkingSpacesLeft { get; set; }
     }
 }

@@ -7,7 +7,19 @@
 <h1>Park vehicle</h1>
 
 @*<h4>VehicleModel</h4>*@
-
+@if (ViewBag.isSuccess)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Park Successful for <span>@ViewBag.regNum</span>!</strong>
+       
+        
+        <a asp-controller="VehicleModels" asp-action="Vehicles">Please Check Parked Vehicles</a>
+        
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -43,13 +55,16 @@
                 <input asp-for="NumWheels" class="form-control" />
                 <span asp-validation-for="NumWheels" class="text-danger"></span>
             </div>
-           
             <div class="form-group">
                 <input type="submit" value="Park" class="btn btn-primary" />
             </div>
         </form>
+
+
     </div>
 </div>
+
+
 
 <div>
     <a asp-action="Index">Back to List</a>
