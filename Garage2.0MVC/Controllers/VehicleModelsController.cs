@@ -17,7 +17,7 @@ namespace Garage2._0MVC.Controllers
     public class VehicleModelsController : Controller
     {
         private readonly Garage2_0MVCContext db;
-        public const int PARKING_CAPACITY = 3;
+        public const int PARKING_CAPACITY = 5;
 
         public VehicleModelsController(Garage2_0MVCContext context)
         {
@@ -31,6 +31,8 @@ namespace Garage2._0MVC.Controllers
             iCollection.Vehicles = await db.VehicleModel.ToListAsync();
             iCollection.ParkingSpacesLeft = LeftParkingSpaces();
             iCollection.TotalSpaces = PARKING_CAPACITY;
+
+            ViewBag.isSuccess = isSuccess;
             return View(iCollection);
         }
 
@@ -39,8 +41,8 @@ namespace Garage2._0MVC.Controllers
             var totalVehicles = db.VehicleModel.Count();
 
             return PARKING_CAPACITY - totalVehicles;
-            ViewBag.isSuccess = isSuccess;
-            return View(await db.VehicleModel.ToListAsync());
+           
+           
         }
 
         // GET: Vehicles

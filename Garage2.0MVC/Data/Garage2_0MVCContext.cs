@@ -16,6 +16,16 @@ namespace Garage2._0MVC.Data
 
         public DbSet<Garage2._0MVC.Models.VehicleModel> VehicleModel { get; set; }
 
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<VehicleModel>()
+                .HasData(
+                    new VehicleModel { Id = 1, Type = VehicleType.Car, RegNum = "ABC123", Color = "Red", Brand = "Volvo", Model = "V70", NumWheels = 4, ArrivalTime = DateTime.Now},
+                    new VehicleModel { Id = 2, Type = VehicleType.Bus, RegNum = "GHT253", Color = "Blue", Brand = "Saab", Model = "T20", NumWheels = 6, ArrivalTime = DateTime.Now},
+                    new VehicleModel { Id = 3, Type = VehicleType.Boat, RegNum = "TYU589", Color = "Black", Brand = "BMW", Model = "800", NumWheels = 0, ArrivalTime = DateTime.Now},
+                    new VehicleModel { Id = 4, Type = VehicleType.Airplane, RegNum = "SK1420", Color = "Silver", Brand = "SAS", Model = "737", NumWheels = 6, ArrivalTime = DateTime.Now}
+                    
+                );
+        }
     }
 }
