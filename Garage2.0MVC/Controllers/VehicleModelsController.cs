@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
-
 namespace Garage2._0MVC.Controllers
 {
     public class VehicleModelsController : Controller
     {
         private readonly Garage2_0MVCContext db;
+        public const int PARKING_CAPACITY = 3;
 
         public VehicleModelsController(Garage2_0MVCContext context)
         {
@@ -23,21 +23,32 @@ namespace Garage2._0MVC.Controllers
         // GET: VehicleModels
         public async Task<IActionResult> Index()
         {
-            return View(await db.VehicleModel.ToListAsync());
+            var iCollection = new IndexCollectionViewModel();
+            iCollection.Vehicles = await db.VehicleModel.ToListAsync();
+            var totalVehicles = db.VehicleModel.Count();
+            iCollection.ParkingSpacesLeft = PARKING_CAPACITY - totalVehicles;
+            iCollection.TotalSpaces = PARKING_CAPACITY;
+            return View(iCollection);
         }
 
         // GET: Vehicles
         public async Task<IActionResult> Vehicles()
         {
+            var vCollection = new VehiclesCollectionViewModel();
+            var totalVehicles = db.VehicleModel.Count();
             var model = await db.VehicleModel.Select(v => new VehicleViewModel
             {
                 Id = v.Id,
                 VehicleType = v.Type,
                 RegNum = v.RegNum,
-                ArrivalTime = v.ArrivalTime
+                ArrivalTime = v.ArrivalTime,
             }).ToListAsync();
 
-            return View(model);
+            vCollection.ParkingSpacesLeft = PARKING_CAPACITY - totalVehicles;
+            vCollection.Vehicles = model;
+            vCollection.TotalSpaces = PARKING_CAPACITY;
+
+            return View(vCollection);
         }
 
 
@@ -59,17 +70,16 @@ namespace Garage2._0MVC.Controllers
 
             return View(vehicleModel);
         }
-
         public async Task<IActionResult> Filter(string regNum)
         {
             IQueryable<VehicleViewModel> model;
             if (string.IsNullOrWhiteSpace(regNum))
             {
-                model = db.VehicleModel.Select(v => new VehicleViewModel 
+                model = db.VehicleModel.Select(v => new VehicleViewModel
                 {
-                VehicleType = v.Type,
-                ArrivalTime = v.ArrivalTime,
-                RegNum = v.RegNum
+                    VehicleType = v.Type,
+                    ArrivalTime = v.ArrivalTime,
+                    RegNum = v.RegNum
                 });
             }
             else
@@ -77,26 +87,26 @@ namespace Garage2._0MVC.Controllers
                 model = db.VehicleModel
                     .Where(v => v.RegNum.Contains(regNum))
                     .Select(v => new VehicleViewModel
-                {
-                    VehicleType = v.Type,
-                    ArrivalTime = v.ArrivalTime,
-                    RegNum = v.RegNum
-                });
+                    {
+                        VehicleType = v.Type,
+                        ArrivalTime = v.ArrivalTime,
+                        RegNum = v.RegNum
+                    });
             }
-            
+
             return View(nameof(Vehicles), await model.ToListAsync());
         }
 
         public async Task<IActionResult> Statistics()
         {
-          
+
             var model = db.VehicleModel.GroupBy(v => v.Type)
                 .Select(v => new StatisticsViewModel
                 {
                     Type = v.Key,
                     Count = v.Count()
                 }); ;
-            return View(await model.ToListAsync()); 
+            return View(await model.ToListAsync());
         }
 
         // GET: VehicleModels/Create
@@ -152,7 +162,7 @@ namespace Garage2._0MVC.Controllers
                     Model = e.Model,
                     NumWheels = e.NumWheels
                 }).FirstOrDefaultAsync(v => v.Id == id);
-            
+
             if (editViewModel == null)
             {
                 return NotFound();
@@ -166,7 +176,7 @@ namespace Garage2._0MVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditViewModel editViewModel)
-        {       //TODO kan ta bort vehiclemodel och ha istället editviewmodel?
+        {
             if (id != editViewModel.Id)
             {
                 return NotFound();
@@ -190,7 +200,7 @@ namespace Garage2._0MVC.Controllers
                     db.Entry(vehicle).Property(v => v.RegNum).IsModified = false;
 
                     await db.SaveChangesAsync();
-                    
+
 
                 }
                 catch (DbUpdateConcurrencyException)
