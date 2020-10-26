@@ -39,7 +39,6 @@ namespace Garage2._0MVC.Controllers
         public int LeftParkingSpaces()
         {
             var totalVehicles = db.VehicleModel.Count();
-
             return PARKING_CAPACITY - totalVehicles;
            
            
@@ -152,7 +151,7 @@ namespace Garage2._0MVC.Controllers
                 db.Add(vehicleModel);
                 await db.SaveChangesAsync();
                 
-                return RedirectToAction("Create", new { isSuccess = true, regNum = vehicleModel.RegNum });
+                return RedirectToAction("Create", new { isSuccess = true, regNum = vehicleModel.RegNum});
             }
             return View(vehicleModel);
         }

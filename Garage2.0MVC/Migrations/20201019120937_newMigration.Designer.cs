@@ -4,14 +4,16 @@ using Garage2._0MVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage2._0MVC.Migrations
 {
     [DbContext(typeof(Garage2_0MVCContext))]
-    partial class Garage2_0MVCContextModelSnapshot : ModelSnapshot
+    [Migration("20201019120937_newMigration")]
+    partial class newMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +65,7 @@ namespace Garage2._0MVC.Migrations
                         new
                         {
                             Id = 1,
-                            ArrivalTime = new DateTime(2020, 10, 19, 14, 11, 40, 371, DateTimeKind.Local).AddTicks(4207),
+                            ArrivalTime = new DateTime(2020, 10, 19, 14, 9, 36, 752, DateTimeKind.Local).AddTicks(1746),
                             Brand = "Volvo",
                             Color = "Red",
                             Model = "V70",
@@ -74,7 +76,7 @@ namespace Garage2._0MVC.Migrations
                         new
                         {
                             Id = 2,
-                            ArrivalTime = new DateTime(2020, 10, 19, 14, 11, 40, 380, DateTimeKind.Local).AddTicks(9796),
+                            ArrivalTime = new DateTime(2020, 10, 19, 14, 9, 36, 758, DateTimeKind.Local).AddTicks(2765),
                             Brand = "Saab",
                             Color = "Blue",
                             Model = "T20",
@@ -85,7 +87,7 @@ namespace Garage2._0MVC.Migrations
                         new
                         {
                             Id = 3,
-                            ArrivalTime = new DateTime(2020, 10, 19, 14, 11, 40, 380, DateTimeKind.Local).AddTicks(9935),
+                            ArrivalTime = new DateTime(2020, 10, 19, 14, 9, 36, 758, DateTimeKind.Local).AddTicks(2871),
                             Brand = "BMW",
                             Color = "Black",
                             Model = "800",
@@ -96,7 +98,7 @@ namespace Garage2._0MVC.Migrations
                         new
                         {
                             Id = 4,
-                            ArrivalTime = new DateTime(2020, 10, 19, 14, 11, 40, 380, DateTimeKind.Local).AddTicks(9947),
+                            ArrivalTime = new DateTime(2020, 10, 19, 14, 9, 36, 758, DateTimeKind.Local).AddTicks(2882),
                             Brand = "SAS",
                             Color = "Silver",
                             Model = "737",
