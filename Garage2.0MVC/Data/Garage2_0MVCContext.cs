@@ -28,6 +28,8 @@ namespace Garage2._0MVC.Data
                 );
         }
 
+        public DbSet<Garage2._0MVC.Models.Member> Member { get; set; }
+
         public DbSet<Garage2._0MVC.Models.VehicleType> VehicleType { get; set; }
     }
 }
