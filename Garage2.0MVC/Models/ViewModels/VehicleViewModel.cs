@@ -12,7 +12,7 @@ namespace Garage2._0MVC.Models.ViewModels
         public int Id { get; set; }
 
         [DisplayName("Vehicle Type")]
-        public VehicleType VehicleType { get; set; }
+        public VehicleTypeEnum VehicleType { get; set; }
 
         [DisplayName("Registration Number")]
         public string RegNum { get; set; }

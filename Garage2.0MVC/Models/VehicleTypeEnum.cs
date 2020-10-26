@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 
 namespace Garage2._0MVC.Models
 {
-    public class VehicleType
+    public enum VehicleTypeEnum
     {
-        public int Id { get; set; }
-        public string Type { get; set; }
-        public int Capacity { get; set; }
+        Car,
+        Bus,
+        Boat,
+        Airplane
     }
+    
 }

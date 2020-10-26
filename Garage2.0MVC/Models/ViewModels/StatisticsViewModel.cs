@@ -9,7 +9,7 @@ namespace Garage2._0MVC.Models.ViewModels
 {
     public class StatisticsViewModel
     {
-        public VehicleType Type { get; set; }        //TODO Lägg till validering
+        public VehicleTypeEnum Type { get; set; }        //TODO Lägg till validering
 
         public int Count { get; set; }
 

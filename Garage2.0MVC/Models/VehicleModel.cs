@@ -13,7 +13,7 @@ namespace Garage2._0MVC.Models
         public int Id { get; set; }
 
         [Required]
-        public VehicleType Type { get; set; }
+        public VehicleTypeEnum Type { get; set; }
 
         [Required]
         [DisplayName("Registration Number")]

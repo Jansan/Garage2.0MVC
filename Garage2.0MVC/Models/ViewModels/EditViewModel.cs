@@ -11,7 +11,7 @@ namespace Garage2._0MVC.Models.ViewModels
     public class EditViewModel
     {
         public int Id { get; set; }
-        public VehicleType Type { get; set; }
+        public VehicleTypeEnum Type { get; set; }
 
         [Required]
         [StringLength(maximumLength: 20, MinimumLength = 3)]
