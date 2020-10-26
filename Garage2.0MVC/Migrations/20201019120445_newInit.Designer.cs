@@ -4,41 +4,22 @@ using Garage2._0MVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage2._0MVC.Migrations
 {
     [DbContext(typeof(Garage2_0MVCContext))]
-    partial class Garage2_0MVCContextModelSnapshot : ModelSnapshot
+    [Migration("20201019120445_newInit")]
+    partial class newInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Garage2._0MVC.Models.Member", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Member");
-                });
 
             modelBuilder.Entity("Garage2._0MVC.Models.VehicleModel", b =>
                 {
@@ -60,9 +41,6 @@ namespace Garage2._0MVC.Migrations
                         .HasColumnType("nvarchar(20)")
                         .HasMaxLength(20);
 
-                    b.Property<int?>("MemberId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("nvarchar(25)")
@@ -81,15 +59,13 @@ namespace Garage2._0MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemberId");
-
                     b.ToTable("VehicleModel");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            ArrivalTime = new DateTime(2020, 10, 19, 14, 11, 40, 371, DateTimeKind.Local).AddTicks(4207),
+                            ArrivalTime = new DateTime(2020, 10, 19, 14, 4, 44, 710, DateTimeKind.Local).AddTicks(4117),
                             Brand = "Volvo",
                             Color = "Red",
                             Model = "V70",
@@ -100,7 +76,7 @@ namespace Garage2._0MVC.Migrations
                         new
                         {
                             Id = 2,
-                            ArrivalTime = new DateTime(2020, 10, 19, 14, 11, 40, 380, DateTimeKind.Local).AddTicks(9796),
+                            ArrivalTime = new DateTime(2020, 10, 19, 14, 4, 44, 714, DateTimeKind.Local).AddTicks(1945),
                             Brand = "Saab",
                             Color = "Blue",
                             Model = "T20",
@@ -111,7 +87,7 @@ namespace Garage2._0MVC.Migrations
                         new
                         {
                             Id = 3,
-                            ArrivalTime = new DateTime(2020, 10, 19, 14, 11, 40, 380, DateTimeKind.Local).AddTicks(9935),
+                            ArrivalTime = new DateTime(2020, 10, 19, 14, 4, 44, 714, DateTimeKind.Local).AddTicks(2013),
                             Brand = "BMW",
                             Color = "Black",
                             Model = "800",
@@ -122,7 +98,7 @@ namespace Garage2._0MVC.Migrations
                         new
                         {
                             Id = 4,
-                            ArrivalTime = new DateTime(2020, 10, 19, 14, 11, 40, 380, DateTimeKind.Local).AddTicks(9947),
+                            ArrivalTime = new DateTime(2020, 10, 19, 14, 4, 44, 714, DateTimeKind.Local).AddTicks(2021),
                             Brand = "SAS",
                             Color = "Silver",
                             Model = "737",
@@ -130,13 +106,6 @@ namespace Garage2._0MVC.Migrations
                             RegNum = "SK1420",
                             Type = 3
                         });
-                });
-
-            modelBuilder.Entity("Garage2._0MVC.Models.VehicleModel", b =>
-                {
-                    b.HasOne("Garage2._0MVC.Models.Member", null)
-                        .WithMany("VehicleModels")
-                        .HasForeignKey("MemberId");
                 });
 #pragma warning restore 612, 618
         }
