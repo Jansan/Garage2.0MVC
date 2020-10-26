@@ -1,71 +1,131 @@
-﻿@model IEnumerable<Garage2._0MVC.Models.VehicleModel>
+﻿@model Garage2._0MVC.Models.ViewModels.IndexCollectionViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
+@if (ViewBag.isSuccess)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Unpark Successful!</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
-<p>
-    <a asp-action="Create">Park a vehicle</a>
-</p>
+@if (Model.ParkingSpacesLeft > 0)
+{
+    <p>
+        <a asp-action="Create">Park a vehicle</a>
+    </p>
+
+}
+else
+{
+    <p>
+        <a href="myModal" data-toggle="modal" data-target="#myModal">Park a vehicle</a>
+    </p>
+}
+
+<div class="container">
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Parking is full, would you like to unpark?</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="float-right">
+                        <a asp-action="Index">Back to vehicles list</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.ParkingSpacesLeft)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.ParkingSpacesLeft)
+    </dd>
+</dl>
+
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.TotalSpaces)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.TotalSpaces)
+    </dd>
+</dl>
+
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                Vehicle Type
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RegNum)
+                Registration Number
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color)
+                Color
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand)
+                Brand
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Model)
+                Model
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumWheels)
+                Number of Wheels
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ArrivalTime)
+                Arrival Time
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegNum)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumWheels)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ArrivalTime)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Unpark</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Vehicles)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegNum)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Color)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Brand)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumWheels)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ArrivalTime)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Unpark</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+

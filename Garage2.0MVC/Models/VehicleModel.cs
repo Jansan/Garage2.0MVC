@@ -35,7 +35,7 @@ namespace Garage2._0MVC.Models
 
         [Required]
         [DisplayName("Number of Wheels")]
-        [Range(4, 20)]
+        [Range(0, 20)]
         public int NumWheels { get; set; }
         
         [DisplayName("Arrival Time")]
