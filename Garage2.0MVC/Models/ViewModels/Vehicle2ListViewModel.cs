@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Garage2._0MVC.Models.ViewModels
 {
-    public class Vehicle2ViewModel
+    public class Vehicle2ListViewModel
     {
         public int Id { get; set; }
 

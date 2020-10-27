@@ -7,23 +7,45 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
+using Garage2._0MVC.Models.ViewModels;
 
 namespace Garage2._0MVC.Controllers
 {
     public class VehicleModels2Controller : Controller
     {
-        private readonly Garage2_0MVCContext _context;
+        private readonly Garage2_0MVCContext db;
+        public const int parkingCapacity = 5;
 
-        public VehicleModels2Controller(Garage2_0MVCContext context)
+        public VehicleModels2Controller(Garage2_0MVCContext db)
         {
-            _context = context;
+            this.db = db;
         }
 
         // GET: VehicleModels2
         public async Task<IActionResult> Index()
         {
-            var garage2_0MVCContext = _context.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType);
-            return View(await garage2_0MVCContext.ToListAsync());
+            var model = await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
+                .Include(v => v.VehicleModelParkingSpaces).ThenInclude(v => v.ParkingSpace)
+                .Select(l => new Vehicle2ListViewModel
+                {
+                    Id = l.Id,
+                    Type = l.VehicleType.Type,
+                    RegNum = l.RegNum,
+                    ArrivalTime = l.ArrivalTime,
+                    Owner = l.Member.FullName,
+                    //ParkingNumber = l.VehicleModelParkingSpaces
+                    ParkingSpacesLeft = LeftParkingSpaces(),
+                    TotalSpaces = parkingCapacity
+                }).ToListAsync();
+
+            return View(model);
+        }
+
+        public int LeftParkingSpaces()
+        {
+            var totalVehicles = db.VehicleModel.Count();
+
+            return parkingCapacity - totalVehicles;
         }
 
         // GET: VehicleModels2/Details/5
@@ -34,7 +56,7 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await _context.VehicleModel
+            var vehicleModel = await db.VehicleModel
                 .Include(v => v.Member)
                 .Include(v => v.VehicleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -49,8 +71,8 @@ namespace Garage2._0MVC.Controllers
         // GET: VehicleModels2/Create
         public IActionResult Create()
         {
-            ViewData["MemberId"] = new SelectList(_context.Member, "Id", "Id");
-            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleType, "Id", "Id");
+            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id");
+            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id");
             return View();
         }
 
@@ -63,12 +85,12 @@ namespace Garage2._0MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vehicleModel);
-                await _context.SaveChangesAsync();
+                db.Add(vehicleModel);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
+            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
+            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
             return View(vehicleModel);
         }
 
@@ -80,13 +102,13 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await _context.VehicleModel.FindAsync(id);
+            var vehicleModel = await db.VehicleModel.FindAsync(id);
             if (vehicleModel == null)
             {
                 return NotFound();
             }
-            ViewData["MemberId"] = new SelectList(_context.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
+            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
+            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
             return View(vehicleModel);
         }
 
@@ -106,8 +128,8 @@ namespace Garage2._0MVC.Controllers
             {
                 try
                 {
-                    _context.Update(vehicleModel);
-                    await _context.SaveChangesAsync();
+                    db.Update(vehicleModel);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -122,8 +144,8 @@ namespace Garage2._0MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
+            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
+            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
             return View(vehicleModel);
         }
 
@@ -135,7 +157,7 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await _context.VehicleModel
+            var vehicleModel = await db.VehicleModel
                 .Include(v => v.Member)
                 .Include(v => v.VehicleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -152,15 +174,15 @@ namespace Garage2._0MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehicleModel = await _context.VehicleModel.FindAsync(id);
-            _context.VehicleModel.Remove(vehicleModel);
-            await _context.SaveChangesAsync();
+            var vehicleModel = await db.VehicleModel.FindAsync(id);
+            db.VehicleModel.Remove(vehicleModel);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool VehicleModelExists(int id)
         {
-            return _context.VehicleModel.Any(e => e.Id == id);
+            return db.VehicleModel.Any(e => e.Id == id);
         }
     }
 }
