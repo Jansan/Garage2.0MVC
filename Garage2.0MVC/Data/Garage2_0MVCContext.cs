@@ -14,10 +14,22 @@ namespace Garage2._0MVC.Data
         {
         }
 
-        public DbSet<Garage2._0MVC.Models.VehicleModel> VehicleModel { get; set; }
+        public DbSet<VehicleModel> VehicleModel { get; set; }
 
-        public DbSet<Garage2._0MVC.Models.Member> Member { get; set; }
+        public DbSet<Member> Member { get; set; }
 
-        public DbSet<Garage2._0MVC.Models.VehicleType> VehicleType{ get; set; }
+        public DbSet<VehicleType> VehicleType{ get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<VehicleType>()
+                .HasData(
+                    new VehicleType { Id = 1, Type = "Car", Capacity = 1 },
+                    new VehicleType { Id = 2, Type = "Motorcycle", Capacity = 0.3 },
+                    new VehicleType { Id = 3, Type = "Bus", Capacity = 2 },
+                    new VehicleType { Id = 4, Type = "Boat", Capacity = 2 },
+                    new VehicleType { Id = 5, Type = "Airplane", Capacity = 3 }
+                );
+        }
     }
 }
