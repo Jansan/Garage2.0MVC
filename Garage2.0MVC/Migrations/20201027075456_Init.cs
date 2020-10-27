@@ -49,7 +49,7 @@ namespace Garage2._0MVC.Migrations
                     Model = table.Column<string>(maxLength: 25, nullable: false),
                     NumWheels = table.Column<int>(nullable: false),
                     ArrivalTime = table.Column<DateTime>(nullable: false),
-                    VehicleNum = table.Column<string>(nullable: true),
+                    ParkingNum = table.Column<string>(nullable: true),
                     VehicleTypeId = table.Column<int>(nullable: false),
                     MemberId = table.Column<int>(nullable: false)
                 },

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage2._0MVC.Migrations
 {
     [DbContext(typeof(Garage2_0MVCContext))]
-    [Migration("20201026161413_Init")]
+    [Migration("20201027075456_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,6 +73,9 @@ namespace Garage2._0MVC.Migrations
                     b.Property<int>("NumWheels")
                         .HasColumnType("int");
 
+                    b.Property<string>("ParkingNum")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RegNum")
                         .IsRequired()
                         .HasColumnType("nvarchar(6)")
@@ -80,9 +83,6 @@ namespace Garage2._0MVC.Migrations
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
-
-                    b.Property<string>("VehicleNum")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("VehicleTypeId")
                         .HasColumnType("int");

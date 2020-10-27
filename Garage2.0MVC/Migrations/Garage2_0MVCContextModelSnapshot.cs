@@ -71,6 +71,9 @@ namespace Garage2._0MVC.Migrations
                     b.Property<int>("NumWheels")
                         .HasColumnType("int");
 
+                    b.Property<string>("ParkingNum")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RegNum")
                         .IsRequired()
                         .HasColumnType("nvarchar(6)")
@@ -78,9 +81,6 @@ namespace Garage2._0MVC.Migrations
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
-
-                    b.Property<string>("VehicleNum")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("VehicleTypeId")
                         .HasColumnType("int");
