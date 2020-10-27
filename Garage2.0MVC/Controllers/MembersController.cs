@@ -64,6 +64,16 @@ namespace Garage2._0MVC.Controllers
             }
             return View(member);
         }
+        // CheckUniqueEmail
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult CheckUniqueEmail(string email)
+        {
+            if (_context.Member.Any(m => m.Email == email))
+            {
+                return Json($"You have already used the {email} email id");
+            }
+            return Json(true);
+        }
 
         // GET: Members/Edit/5
         public async Task<IActionResult> Edit(int? id)
