@@ -45,6 +45,7 @@ namespace Garage2._0MVC.Models
         public int MemberId { get; set; }
         public VehicleType VehicleType { get; set; }
         public Member Member { get; set; }
+        public ICollection<VehicleModelParkingSpace> VehicleModelParkingSpaces { get; set; }
 
     }
 }

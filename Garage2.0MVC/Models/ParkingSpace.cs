@@ -9,5 +9,8 @@ namespace Garage2._0MVC.Models
     {
         public int Id { get; set; }
         public int ParkingNum { get; set; }
+
+        public ICollection<VehicleModelParkingSpace> VehicleModelParkingSpaces { get; set; }
+
     }
 }
