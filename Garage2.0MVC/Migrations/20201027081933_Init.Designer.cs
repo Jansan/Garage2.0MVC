@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage2._0MVC.Migrations
 {
     [DbContext(typeof(Garage2_0MVCContext))]
-    [Migration("20201027075456_Init")]
+    [Migration("20201027081933_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
