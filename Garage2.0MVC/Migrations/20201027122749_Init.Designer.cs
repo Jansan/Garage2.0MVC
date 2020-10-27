@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage2._0MVC.Migrations
 {
     [DbContext(typeof(Garage2_0MVCContext))]
-    [Migration("20201027084335_SeedDataType")]
-    partial class SeedDataType
+    [Migration("20201027122749_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,6 +40,21 @@ namespace Garage2._0MVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Member");
+                });
+
+            modelBuilder.Entity("Garage2._0MVC.Models.ParkingSpace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ParkingNum")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ParkingSpace");
                 });
 
             modelBuilder.Entity("Garage2._0MVC.Models.VehicleModel", b =>
@@ -73,9 +88,6 @@ namespace Garage2._0MVC.Migrations
                     b.Property<int>("NumWheels")
                         .HasColumnType("int");
 
-                    b.Property<string>("ParkingNum")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("RegNum")
                         .IsRequired()
                         .HasColumnType("nvarchar(6)")
@@ -96,6 +108,28 @@ namespace Garage2._0MVC.Migrations
                     b.ToTable("VehicleModel");
                 });
 
+            modelBuilder.Entity("Garage2._0MVC.Models.VehicleModelParkingSpace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ParkingSpaceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VehicleModelId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParkingSpaceId");
+
+                    b.HasIndex("VehicleModelId");
+
+                    b.ToTable("VehicleModelParkingSpace");
+                });
+
             modelBuilder.Entity("Garage2._0MVC.Models.VehicleType", b =>
                 {
                     b.Property<int>("Id")
@@ -106,8 +140,8 @@ namespace Garage2._0MVC.Migrations
                     b.Property<double>("Capacity")
                         .HasColumnType("float");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -118,31 +152,31 @@ namespace Garage2._0MVC.Migrations
                         {
                             Id = 1,
                             Capacity = 1.0,
-                            Type = "Car"
+                            Type = 0
                         },
                         new
                         {
                             Id = 2,
                             Capacity = 0.29999999999999999,
-                            Type = "Motorcycle"
+                            Type = 1
                         },
                         new
                         {
                             Id = 3,
                             Capacity = 2.0,
-                            Type = "Bus"
+                            Type = 2
                         },
                         new
                         {
                             Id = 4,
                             Capacity = 2.0,
-                            Type = "Boat"
+                            Type = 3
                         },
                         new
                         {
                             Id = 5,
                             Capacity = 3.0,
-                            Type = "Airplane"
+                            Type = 4
                         });
                 });
 
@@ -157,6 +191,21 @@ namespace Garage2._0MVC.Migrations
                     b.HasOne("Garage2._0MVC.Models.VehicleType", "VehicleType")
                         .WithMany()
                         .HasForeignKey("VehicleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Garage2._0MVC.Models.VehicleModelParkingSpace", b =>
+                {
+                    b.HasOne("Garage2._0MVC.Models.ParkingSpace", "ParkingSpace")
+                        .WithMany("VehicleModelParkingSpaces")
+                        .HasForeignKey("ParkingSpaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Garage2._0MVC.Models.VehicleModel", "VehicleModel")
+                        .WithMany("VehicleModelParkingSpaces")
+                        .HasForeignKey("VehicleModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

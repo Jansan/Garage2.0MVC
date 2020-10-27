@@ -65,7 +65,7 @@ namespace Garage2._0MVC
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=VehicleModels}/{action=Index}/{id?}");
+                    pattern: "{controller=VehicleModels2}/{action=Index}/{id?}");
             });
             //RotativaConfiguration.Setup(env, "Rotativa");
         }

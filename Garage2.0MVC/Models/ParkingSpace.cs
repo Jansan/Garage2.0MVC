@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 
 namespace Garage2._0MVC.Models
 {
-    public class VehicleType
+    public class ParkingSpace
     {
         public int Id { get; set; }
-        public VehicleTypeEnum Type { get; set; }
-        public double Capacity { get; set; }
+        public int ParkingNum { get; set; }
+
+        public ICollection<VehicleModelParkingSpace> VehicleModelParkingSpaces { get; set; }
+
     }
 }
