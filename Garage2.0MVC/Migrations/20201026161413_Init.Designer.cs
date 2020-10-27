@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage2._0MVC.Migrations
 {
     [DbContext(typeof(Garage2_0MVCContext))]
-    [Migration("20201026155007_Garage3")]
-    partial class Garage3
+    [Migration("20201026161413_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -94,60 +94,6 @@ namespace Garage2._0MVC.Migrations
                     b.HasIndex("VehicleTypeId");
 
                     b.ToTable("VehicleModel");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ArrivalTime = new DateTime(2020, 10, 26, 16, 50, 6, 803, DateTimeKind.Local).AddTicks(2325),
-                            Brand = "Volvo",
-                            Color = "Red",
-                            MemberId = 0,
-                            Model = "V70",
-                            NumWheels = 4,
-                            RegNum = "ABC123",
-                            Type = 0,
-                            VehicleTypeId = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ArrivalTime = new DateTime(2020, 10, 26, 16, 50, 6, 811, DateTimeKind.Local).AddTicks(5826),
-                            Brand = "Saab",
-                            Color = "Blue",
-                            MemberId = 0,
-                            Model = "T20",
-                            NumWheels = 6,
-                            RegNum = "GHT253",
-                            Type = 1,
-                            VehicleTypeId = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ArrivalTime = new DateTime(2020, 10, 26, 16, 50, 6, 811, DateTimeKind.Local).AddTicks(5926),
-                            Brand = "BMW",
-                            Color = "Black",
-                            MemberId = 0,
-                            Model = "800",
-                            NumWheels = 0,
-                            RegNum = "TYU589",
-                            Type = 2,
-                            VehicleTypeId = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ArrivalTime = new DateTime(2020, 10, 26, 16, 50, 6, 811, DateTimeKind.Local).AddTicks(5944),
-                            Brand = "SAS",
-                            Color = "Silver",
-                            MemberId = 0,
-                            Model = "737",
-                            NumWheels = 6,
-                            RegNum = "SK1420",
-                            Type = 3,
-                            VehicleTypeId = 0
-                        });
                 });
 
             modelBuilder.Entity("Garage2._0MVC.Models.VehicleType", b =>
