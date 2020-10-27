@@ -18,7 +18,7 @@ namespace Garage2._0MVC.Data
 
         public DbSet<Member> Member { get; set; }
 
-        public DbSet<VehicleType> VehicleType{ get; set; }
+        public DbSet<VehicleType> VehicleType { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
