@@ -8,6 +8,7 @@ namespace Garage2._0MVC.Models
     public enum VehicleTypeEnum
     {
         Car,
+        Motorcycle,
         Bus,
         Boat,
         Airplane

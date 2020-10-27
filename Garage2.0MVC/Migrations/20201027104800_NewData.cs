@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Garage2._0MVC.Migrations
 {
-    public partial class Init : Migration
+    public partial class NewData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,8 +28,8 @@ namespace Garage2._0MVC.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(nullable: true),
-                    Capacity = table.Column<int>(nullable: false)
+                    Type = table.Column<int>(nullable: false),
+                    Capacity = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -68,6 +68,18 @@ namespace Garage2._0MVC.Migrations
                         principalTable: "VehicleType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "VehicleType",
+                columns: new[] { "Id", "Capacity", "Type" },
+                values: new object[,]
+                {
+                    { 1, 1.0, 0 },
+                    { 2, 0.29999999999999999, 1 },
+                    { 3, 2.0, 2 },
+                    { 4, 2.0, 3 },
+                    { 5, 3.0, 4 }
                 });
 
             migrationBuilder.CreateIndex(

@@ -8,7 +8,7 @@ namespace Garage2._0MVC.Models
     public class VehicleType
     {
         public int Id { get; set; }
-        public string Type { get; set; }
+        public VehicleTypeEnum Type { get; set; }
         public double Capacity { get; set; }
     }
 }

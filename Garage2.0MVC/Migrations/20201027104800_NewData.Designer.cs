@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage2._0MVC.Migrations
 {
     [DbContext(typeof(Garage2_0MVCContext))]
-    [Migration("20201027084335_SeedDataType")]
-    partial class SeedDataType
+    [Migration("20201027104800_NewData")]
+    partial class NewData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -106,8 +106,8 @@ namespace Garage2._0MVC.Migrations
                     b.Property<double>("Capacity")
                         .HasColumnType("float");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -118,31 +118,31 @@ namespace Garage2._0MVC.Migrations
                         {
                             Id = 1,
                             Capacity = 1.0,
-                            Type = "Car"
+                            Type = 0
                         },
                         new
                         {
                             Id = 2,
                             Capacity = 0.29999999999999999,
-                            Type = "Motorcycle"
+                            Type = 1
                         },
                         new
                         {
                             Id = 3,
                             Capacity = 2.0,
-                            Type = "Bus"
+                            Type = 2
                         },
                         new
                         {
                             Id = 4,
                             Capacity = 2.0,
-                            Type = "Boat"
+                            Type = 3
                         },
                         new
                         {
                             Id = 5,
                             Capacity = 3.0,
-                            Type = "Airplane"
+                            Type = 4
                         });
                 });
 
