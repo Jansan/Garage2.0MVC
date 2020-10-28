@@ -14,6 +14,7 @@ using jsreport.AspNetCore;
 using jsreport.Local;
 using jsreport.Binary;
 
+
 namespace Garage2._0MVC
 {
     public class Startup
@@ -39,6 +40,8 @@ namespace Garage2._0MVC
 
             services.AddDbContext<Garage2_0MVCContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Garage2_0MVCContext")));
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

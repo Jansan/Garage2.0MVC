@@ -56,9 +56,21 @@ namespace Garage2._0MVC.Controllers
             {
                 return NotFound();
             }
-
             var member = await _context.Member
+                .Include(v => v.VehicleModels)
+                .ThenInclude(v => v.VehicleType)
+                .Select(m => new MemberDetailsViewModel
+                {
+                     Id = m.Id,
+                     FirstName = m.FirstName,
+                     LastName = m.LastName,
+                     Email = m.Email,
+                     VehicleModels = m.VehicleModels
+                })
                 .FirstOrDefaultAsync(m => m.Id == id);
+                
+
+            
             if (member == null)
             {
                 return NotFound();

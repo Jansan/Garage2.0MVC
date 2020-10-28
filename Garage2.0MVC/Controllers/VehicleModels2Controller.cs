@@ -22,8 +22,9 @@ namespace Garage2._0MVC.Controllers
         // GET: VehicleModels2
         public async Task<IActionResult> Index()
         {
-            var garage2_0MVCContext = _context.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType);
-            return View(await garage2_0MVCContext.ToListAsync());
+            
+            var model = _context.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType);
+            return View(await model.ToListAsync());
         }
 
         // GET: VehicleModels2/Details/5
