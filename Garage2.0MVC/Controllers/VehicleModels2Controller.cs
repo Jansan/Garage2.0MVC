@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
+using Garage2._0MVC.Services;
 
 namespace Garage2._0MVC.Controllers
 {
     public class VehicleModels2Controller : Controller
     {
         private readonly Garage2_0MVCContext db;
+        private readonly IParkingService parkingService;
 
-        public VehicleModels2Controller(Garage2_0MVCContext db)
+        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService)
         {
             this.db = db;
+            this.parkingService = parkingService;
         }
 
         // GET: VehicleModels2
@@ -59,11 +62,13 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels2/Create
-        public IActionResult Create(bool isSuccess = false, string regNum = "")
+        public IActionResult Create()
         {
-            ViewBag.isSuccess = isSuccess;
-            ViewBag.regNum = regNum;
+            var space = parkingService.GetCurrentParking();
+            
            
+            //ViewBag.isSuccess = isSuccess;
+            //ViewBag.regNum = regNum;
             return View();
         }
 
@@ -80,7 +85,7 @@ namespace Garage2._0MVC.Controllers
                 var capacity = db.VehicleType.Find((int)viewmodel.Type).Capacity;       //Hur göra databasuppslagning i property
 
                 //var parkingviewmodel = new ParkingViewModel();
-                //var pLeft = parkingviewmodel.ParkingSpacesLeft;
+                //var pLeft = 2;//parkingviewmodel.ParkingSpacesLeft
                 vehicle = new VehicleModel
                 {
                     ArrivalTime = DateTime.Now,
