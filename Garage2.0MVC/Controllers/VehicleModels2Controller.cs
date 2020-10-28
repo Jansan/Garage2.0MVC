@@ -77,8 +77,10 @@ namespace Garage2._0MVC.Controllers
             VehicleModel vehicle;
             if (ModelState.IsValid)
             {
-                var capacity = db.VehicleType.FirstOrDefault(v => v.Type == viewmodel.Type).Capacity;       //Hur göra databasuppslagning i property
+                var capacity = db.VehicleType.Find((int)viewmodel.Type).Capacity;       //Hur göra databasuppslagning i property
 
+                //var parkingviewmodel = new ParkingViewModel();
+                //var pLeft = parkingviewmodel.ParkingSpacesLeft;
                 vehicle = new VehicleModel
                 {
                     ArrivalTime = DateTime.Now,

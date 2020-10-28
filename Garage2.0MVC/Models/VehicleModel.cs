@@ -13,7 +13,7 @@ namespace Garage2._0MVC.Models
         public int Id { get; set; }
 
         [Required]
-        public VehicleTypeEnum Type { get; set; }
+        public VehicleTypeEnum Type { get; set; }       // int
 
         [Required]
         [DisplayName("Registration Number")]
@@ -41,10 +41,9 @@ namespace Garage2._0MVC.Models
         [DisplayName("Arrival Time")]
         public DateTime ArrivalTime { get; set; }
 
-        public int ParkingSpacesLeft { get; set; }
-        public int TotalParkingSpaces { get; set; }
-
         public int VehicleTypeId { get; set; }
+
+        [DisplayName("Owner")]
         public int MemberId { get; set; }
         public VehicleType VehicleType { get; set; }
         public Member Member { get; set; }

@@ -42,7 +42,7 @@ namespace Garage2._0MVC
             services.AddScoped<IMemberSelectService, MemberSelectService>();
 
             services.AddDbContext<Garage2_0MVCContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("Garage2_0MVCContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("Garage2_0MVCContext")).EnableSensitiveDataLogging());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
