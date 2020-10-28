@@ -1,5 +1,6 @@
-﻿@model Garage2._0MVC.Models.VehicleModel
-
+﻿@model Garage2._0MVC.Models.ViewModels.Vehicle2CreateViewModel
+@inject Garage2._0MVC.Services.ITypeSelectService service
+@inject Garage2._0MVC.Services.IMemberSelectService memberService
 @{
     ViewData["Title"] = "Create";
 }
@@ -12,11 +13,13 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control"></select>
+                <select asp-items="@await service.GetTypesAsync()" asp-for="Type" class="form-control"></select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="RegNum" class="control-label"></label>
                 <input asp-for="RegNum" class="form-control" />
@@ -42,18 +45,11 @@
                 <input asp-for="NumWheels" class="form-control" />
                 <span asp-validation-for="NumWheels" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ArrivalTime" class="control-label"></label>
-                <input asp-for="ArrivalTime" class="form-control" />
-                <span asp-validation-for="ArrivalTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VehicleTypeId" class="control-label"></label>
-                <select asp-for="VehicleTypeId" class ="form-control" asp-items="ViewBag.VehicleTypeId"></select>
-            </div>
+
             <div class="form-group">
                 <label asp-for="MemberId" class="control-label"></label>
-                <select asp-for="MemberId" class ="form-control" asp-items="ViewBag.MemberId"></select>
+                <select asp-items="@await memberService.GetMembersAsync()" asp-for="MemberId" class="form-control"></select>
+                <span asp-validation-for="MemberId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -7,24 +7,38 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
+using Garage2._0MVC.Models.ViewModels;
+using Garage2._0MVC.Services;
 
 namespace Garage2._0MVC.Controllers
 {
     public class VehicleModels2Controller : Controller
     {
-        private readonly Garage2_0MVCContext _context;
+        private readonly Garage2_0MVCContext db;
+        private readonly IParkingService parkingService;
 
-        public VehicleModels2Controller(Garage2_0MVCContext context)
+        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService)
         {
-            _context = context;
+            this.db = db;
+            this.parkingService = parkingService;
         }
 
         // GET: VehicleModels2
         public async Task<IActionResult> Index()
         {
-            
-            var model = _context.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType);
-            return View(await model.ToListAsync());
+            var model = await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
+                .Include(v => v.VehicleModelParkingSpaces).ThenInclude(v => v.ParkingSpace)
+                .Select(l => new Vehicle2ListViewModel
+                {
+                    Id = l.Id,
+                    Type = l.VehicleType.Type,
+                    RegNum = l.RegNum,
+                    ArrivalTime = l.ArrivalTime,
+                    Owner = l.Member.FullName,
+                    //ParkingNumber = l.VehicleModelParkingSpaces
+                }).ToListAsync();
+
+            return View(model);
         }
 
         // GET: VehicleModels2/Details/5
@@ -35,7 +49,7 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await _context.VehicleModel
+            var vehicleModel = await db.VehicleModel
                 .Include(v => v.Member)
                 .Include(v => v.VehicleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -50,8 +64,11 @@ namespace Garage2._0MVC.Controllers
         // GET: VehicleModels2/Create
         public IActionResult Create()
         {
-            ViewData["MemberId"] = new SelectList(_context.Member, "Id", "Id");
-            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleType, "Id", "Id");
+            var space = parkingService.GetCurrentParking();
+            
+           
+            //ViewBag.isSuccess = isSuccess;
+            //ViewBag.regNum = regNum;
             return View();
         }
 
@@ -60,17 +77,46 @@ namespace Garage2._0MVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Type,RegNum,Color,Brand,Model,NumWheels,ArrivalTime,VehicleTypeId,MemberId")] VehicleModel vehicleModel)
+        public async Task<IActionResult> Create([Bind("Id,Type,RegNum,Color,Brand,Model,NumWheels,ArrivalTime,VehicleTypeId,MemberId")] Vehicle2CreateViewModel viewmodel)
         {
+            VehicleModel vehicle;
             if (ModelState.IsValid)
             {
-                _context.Add(vehicleModel);
-                await _context.SaveChangesAsync();
+                var capacity = db.VehicleType.Find((int)viewmodel.Type).Capacity;       //Hur göra databasuppslagning i property
+
+                //var parkingviewmodel = new ParkingViewModel();
+                //var pLeft = 2;//parkingviewmodel.ParkingSpacesLeft
+                vehicle = new VehicleModel
+                {
+                    ArrivalTime = DateTime.Now,
+                    Brand = viewmodel.Brand,
+                    Color = viewmodel.Color,
+                    Model = viewmodel.Model,
+                    NumWheels = viewmodel.NumWheels,
+                    RegNum = viewmodel.RegNum.ToUpper(),
+                    Type = viewmodel.Type,
+                    VehicleTypeId = (int)viewmodel.Type,
+                    MemberId = viewmodel.MemberId
+                   
+                    //VehicleModelParkingSpaces = new ParkingSpace
+                    //{
+                    //    ParkingNum = 1
+                    //}
+                };
+                for (int i = 0; i < capacity; i++)
+                {
+                    
+                }
+
+
+                db.Add(vehicle);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
-            return View(vehicleModel);
+
+            //ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id",vehicle.MemberId);
+            //ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicle.VehicleTypeId);
+            return View(viewmodel);
         }
 
         // GET: VehicleModels2/Edit/5
@@ -81,13 +127,13 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await _context.VehicleModel.FindAsync(id);
+            var vehicleModel = await db.VehicleModel.FindAsync(id);
             if (vehicleModel == null)
             {
                 return NotFound();
             }
-            ViewData["MemberId"] = new SelectList(_context.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
+            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
+            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
             return View(vehicleModel);
         }
 
@@ -107,8 +153,8 @@ namespace Garage2._0MVC.Controllers
             {
                 try
                 {
-                    _context.Update(vehicleModel);
-                    await _context.SaveChangesAsync();
+                    db.Update(vehicleModel);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,8 +169,8 @@ namespace Garage2._0MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(_context.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
+            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
+            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
             return View(vehicleModel);
         }
 
@@ -136,7 +182,7 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await _context.VehicleModel
+            var vehicleModel = await db.VehicleModel
                 .Include(v => v.Member)
                 .Include(v => v.VehicleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -153,15 +199,15 @@ namespace Garage2._0MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehicleModel = await _context.VehicleModel.FindAsync(id);
-            _context.VehicleModel.Remove(vehicleModel);
-            await _context.SaveChangesAsync();
+            var vehicleModel = await db.VehicleModel.FindAsync(id);
+            db.VehicleModel.Remove(vehicleModel);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool VehicleModelExists(int id)
         {
-            return _context.VehicleModel.Any(e => e.Id == id);
+            return db.VehicleModel.Any(e => e.Id == id);
         }
     }
 }

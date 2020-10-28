@@ -6,14 +6,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Garage2._0MVC.Models
+namespace Garage2._0MVC.Models.ViewModels
 {
-    public class VehicleModel
+    public class Vehicle2CreateViewModel
     {
-        public int Id { get; set; }
-
         [Required]
-        public VehicleTypeEnum Type { get; set; }       // int
+        public VehicleTypeEnum Type { get; set; }
 
         [Required]
         [DisplayName("Registration Number")]
@@ -37,17 +35,13 @@ namespace Garage2._0MVC.Models
         [DisplayName("Number of Wheels")]
         [Range(0, 20)]
         public int NumWheels { get; set; }
-        
-        [DisplayName("Arrival Time")]
-        public DateTime ArrivalTime { get; set; }
 
-        public int VehicleTypeId { get; set; }
-
-        [DisplayName("Owner")]
+        [DisplayName("Email")]
+        public string MemberEmail { get; set; }
         public int MemberId { get; set; }
-        public VehicleType VehicleType { get; set; }
-        public Member Member { get; set; }
-        public ICollection<VehicleModelParkingSpace> VehicleModelParkingSpaces { get; set; }
+
+        //    [DisplayName("Type")]
+        //    public VehicleTypeEnum VehicleType { get; set; }
 
     }
 }

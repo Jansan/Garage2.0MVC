@@ -13,6 +13,7 @@ using Garage2._0MVC.Data;
 using jsreport.AspNetCore;
 using jsreport.Local;
 using jsreport.Binary;
+using Garage2._0MVC.Services;
 
 
 namespace Garage2._0MVC
@@ -38,10 +39,12 @@ namespace Garage2._0MVC
             .AsUtility()
             .Create());
 
-            services.AddDbContext<Garage2_0MVCContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("Garage2_0MVCContext")));
+            services.AddScoped<ITypeSelectService, TypeSelectService>();
+            services.AddScoped<IMemberSelectService, MemberSelectService>();
+            services.AddScoped<IParkingService, ParkingService>();
 
-            
+            services.AddDbContext<Garage2_0MVCContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("Garage2_0MVCContext")).EnableSensitiveDataLogging());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
