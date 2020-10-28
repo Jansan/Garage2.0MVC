@@ -14,18 +14,28 @@ namespace Garage2._0MVC.Controllers
     public class VehicleModels2Controller : Controller
     {
         private readonly Garage2_0MVCContext db;
-        public const int PARKING_CAPACITY = 5;
 
-        public VehicleModels2Controller(Garage2_0MVCContext context)
+        public VehicleModels2Controller(Garage2_0MVCContext db)
         {
-            db = context;
+            this.db = db;
         }
 
         // GET: VehicleModels2
         public async Task<IActionResult> Index()
         {
-            var garage2_0MVCContext = db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType);
-            return View(await garage2_0MVCContext.ToListAsync());
+            var model = await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
+                .Include(v => v.VehicleModelParkingSpaces).ThenInclude(v => v.ParkingSpace)
+                .Select(l => new Vehicle2ListViewModel
+                {
+                    Id = l.Id,
+                    Type = l.VehicleType.Type,
+                    RegNum = l.RegNum,
+                    ArrivalTime = l.ArrivalTime,
+                    Owner = l.Member.FullName,
+                    //ParkingNumber = l.VehicleModelParkingSpaces
+                }).ToListAsync();
+
+            return View(model);
         }
 
         // GET: VehicleModels2/Details/5

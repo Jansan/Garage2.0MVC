@@ -1,14 +1,18 @@
-﻿@model IEnumerable<Garage2._0MVC.Models.VehicleModel>
+﻿@model IEnumerable<Vehicle2ListViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Vehicle Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<!--ViewComponent Parking: Parking Space Left | Total Parking Space-->
+<vc:parking></vc:parking>
+
 <table class="table">
     <thead>
         <tr>
@@ -19,31 +23,17 @@
                 @Html.DisplayNameFor(model => model.RegNum)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumWheels)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.ArrivalTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Member)
+                @Html.DisplayNameFor(model => model.Owner)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Type)
@@ -52,25 +42,10 @@
                 @Html.DisplayFor(modelItem => item.RegNum)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Color)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumWheels)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.ArrivalTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.VehicleType.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Member.Id)
+                @Html.DisplayFor(modelItem => item.Owner)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -78,6 +53,6 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>

@@ -41,6 +41,9 @@ namespace Garage2._0MVC.Models
         [DisplayName("Arrival Time")]
         public DateTime ArrivalTime { get; set; }
 
+        public int ParkingSpacesLeft { get; set; }
+        public int TotalParkingSpaces { get; set; }
+
         public int VehicleTypeId { get; set; }
         public int MemberId { get; set; }
         public VehicleType VehicleType { get; set; }
