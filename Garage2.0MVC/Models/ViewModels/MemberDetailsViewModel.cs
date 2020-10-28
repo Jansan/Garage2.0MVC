@@ -17,7 +17,7 @@ namespace Garage2._0MVC.Models.ViewModels
         public string LastName { get; set; }
         
         public string Email { get; set; }
-
+        [DisplayName("Vehicles")]
         public ICollection<VehicleModel> VehicleModels { get; set; }
     }
 }
