@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
+using Garage2._0MVC.Models.ViewModels;
 
 namespace Garage2._0MVC.Controllers
 {
@@ -23,6 +24,21 @@ namespace Garage2._0MVC.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Member.ToListAsync());
+        }
+        // GET: Members ViewModel
+        public async Task<IActionResult> Member(int? id)
+        {
+
+            var model = _context.Member
+                .Include(m => m.VehicleModels)
+                .Select(m => new MemberViewModel
+                {
+                    Id = m.Id,
+                    FullName = m.FullName,
+                    AmountVehicles = m.VehicleModels.Count()
+                });
+
+            return View(await model.ToListAsync());
         }
 
         // GET: Members/Details/5

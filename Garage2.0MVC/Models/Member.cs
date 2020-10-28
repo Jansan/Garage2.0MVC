@@ -28,6 +28,8 @@ namespace Garage2._0MVC.Models
         public string Email { get; set; }
         public string FullName => $"{FirstName} {LastName}";
 
+        
+
         //Navigation property
         public ICollection<VehicleModel> VehicleModels { get; set; }
         
