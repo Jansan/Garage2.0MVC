@@ -14,7 +14,6 @@ namespace Garage2._0MVC.Controllers
     public class VehicleModels2Controller : Controller
     {
         private readonly Garage2_0MVCContext db;
-        public const int parkingCapacity = 5;
 
         public VehicleModels2Controller(Garage2_0MVCContext db)
         {
@@ -34,18 +33,20 @@ namespace Garage2._0MVC.Controllers
                     ArrivalTime = l.ArrivalTime,
                     Owner = l.Member.FullName,
                     //ParkingNumber = l.VehicleModelParkingSpaces
-                    ParkingSpacesLeft = LeftParkingSpaces(),
-                    TotalSpaces = parkingCapacity
                 }).ToListAsync();
 
             return View(model);
         }
 
-        public int LeftParkingSpaces()
+        public async Task<IActionResult> Parking()
         {
-            var totalVehicles = db.VehicleModel.Count();
+            var model = await db.VehicleModel.Select(m => new ParkingViewModel
+            {
+                ParkingSpacesLeft = m.ParkingSpacesLeft,
+                TotalParkingSpaces = m.TotalParkingSpaces
+            }).ToListAsync();
 
-            return parkingCapacity - totalVehicles;
+            return View(nameof(Index), model);
         }
 
         // GET: VehicleModels2/Details/5
