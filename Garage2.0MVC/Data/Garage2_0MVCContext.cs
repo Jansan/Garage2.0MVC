@@ -9,7 +9,7 @@ namespace Garage2._0MVC.Data
 {
     public class Garage2_0MVCContext : DbContext
     {
-        public Garage2_0MVCContext (DbContextOptions<Garage2_0MVCContext> options)
+        public Garage2_0MVCContext(DbContextOptions<Garage2_0MVCContext> options)
             : base(options)
         {
         }
@@ -18,7 +18,10 @@ namespace Garage2._0MVC.Data
 
         public DbSet<Member> Member { get; set; }
 
-        public DbSet<VehicleType> VehicleType{ get; set; }
+        public DbSet<VehicleType> VehicleType { get; set; }
+
+        public DbSet<VehicleModelParkingSpace> VehicleModelParkingSpace { get; set; }
+        public DbSet<ParkingSpace> ParkingSpace { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
