@@ -38,17 +38,6 @@ namespace Garage2._0MVC.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Parking()
-        {
-            var model = await db.VehicleModel.Select(m => new ParkingViewModel
-            {
-                ParkingSpacesLeft = m.ParkingSpacesLeft,
-                TotalParkingSpaces = m.TotalParkingSpaces
-            }).ToListAsync();
-
-            return View(nameof(Index), model);
-        }
-
         // GET: VehicleModels2/Details/5
         public async Task<IActionResult> Details(int? id)
         {
