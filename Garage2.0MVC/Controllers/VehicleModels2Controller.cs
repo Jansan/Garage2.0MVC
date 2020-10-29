@@ -16,11 +16,13 @@ namespace Garage2._0MVC.Controllers
     {
         private readonly Garage2_0MVCContext db;
         private readonly IParkingService parkingService;
+        private readonly ITypeSelectService typeService;
 
-        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService)
+        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService, ITypeSelectService typeService)
         {
             this.db = db;
             this.parkingService = parkingService;
+            this.typeService = typeService;
         }
 
         // GET: VehicleModels2
@@ -31,55 +33,40 @@ namespace Garage2._0MVC.Controllers
 
             var vehicles = await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
                 .Select(v => new VehicleListViewModel
-            {
+                {
                     Id = v.Id,
                     Type = v.Type,
                     RegNum = v.RegNum,
                     ArrivalTime = v.ArrivalTime,
                     Owner = v.Member.FullName
-            }).ToListAsync();
+                }).ToListAsync();
 
-            if (isRegSearch)
-            {
+            if (isRegSearch && isTypeSearch) 
+                vehicles = vehicles.Where(v => v.RegNum.Contains(regSearch) && v.Type == viewModel.Type).ToList();
+
+            else if (isRegSearch)
                 vehicles = vehicles.Where(v => v.RegNum.Contains(regSearch)).ToList();
-            }
+
             else if (isTypeSearch)
-            {
                 vehicles = vehicles.Where(v => v.Type == viewModel.Type).ToList();
-            }
 
             var model = new VehicleIndexViewModel
             {
                 Vehicles = vehicles,
-                Types = await TypeAsync()
+                Types = await typeService.GetTypesAsync()
             };
 
             return View(model);
         }
 
-        private async Task<IEnumerable<SelectListItem>> TypeAsync()
-        {
-            return await db.VehicleType
-                        .Select(m => m.Type)
-                        .Distinct()
-                        .Select(m => new SelectListItem
-                        {
-                            Text = m.ToString(),
-                            Value = m.ToString()
-                        })
-                        .ToListAsync();
-        }
-
 
         //public async Task<IActionResult> Search(string regSearch)
         //{
-        //    // Move to a seperate Search Function
-        //    if (regSearch != null)
-        //    {
-        //        var model = await db.VehicleModel.Where(m => m.RegNum.Contains(regSearch)).ToListAsync();
-        //    }
+        //    // Try to make the Search Function here
+        //    // With Error-Msg
 
-        //    return View(nameof(Index), model);
+
+        //    return View(nameof(Index));
         //}
 
         // GET: VehicleModels2/Details/5

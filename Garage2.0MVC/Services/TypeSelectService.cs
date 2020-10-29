@@ -19,11 +19,14 @@ namespace Garage2._0MVC.Services
 
         public async Task<IEnumerable<SelectListItem>> GetTypesAsync()
         {
-            return await db.VehicleType
-                        .Select(v => new SelectListItem
+            return await db.VehicleModel
+                        .Select(v => v.Type)
+                        .Distinct()
+                        .Select
+                        (v => new SelectListItem
                         {
-                            Text = v.Type.ToString(),
-                            Value = v.Id.ToString()
+                            Text = v.ToString(),
+                            Value = v.ToString()
                         })
                         .ToListAsync();
         }

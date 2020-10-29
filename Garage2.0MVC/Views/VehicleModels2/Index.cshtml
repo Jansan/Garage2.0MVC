@@ -1,4 +1,5 @@
 ﻿@model VehicleIndexViewModel
+@inject Garage2._0MVC.Services.ITypeSelectService service
 
 @{
     ViewData["Title"] = "Index";
@@ -15,7 +16,7 @@
     <div class="input-group mb-3">
         <input name="regSearch" type="text" class="form-control" placeholder="Search on registration number..." />
         <div class="input-group-append">
-            <select asp-for="Type" asp-items="@Model.Types" class="form-control">
+            <select asp-for="Type" asp-items="@await service.GetTypesAsync()" class="form-control">
                 <option selected="selected" value="">Please select</option>
             </select>
         </div>
