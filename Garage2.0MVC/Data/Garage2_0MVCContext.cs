@@ -20,7 +20,7 @@ namespace Garage2._0MVC.Data
 
         public DbSet<VehicleType> VehicleType { get; set; }
 
-        public DbSet<VehicleModelParkingSpace> VehicleModelParkingSpace { get; set; }
+        public DbSet<VehicleModelParkingSpace> VehicleModelParkingSpaces { get; set; }
         public DbSet<ParkingSpace> ParkingSpace { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +33,14 @@ namespace Garage2._0MVC.Data
                     new VehicleType { Id = 4, Type = VehicleTypeEnum.Boat, Capacity = 2 },
                     new VehicleType { Id = 5, Type = VehicleTypeEnum.Airplane, Capacity = 3 }
                 );
+
+            for (int i = 1; i <= 20; i++)
+            {
+            modelBuilder.Entity<ParkingSpace>()
+               .HasData(
+                new  ParkingSpace{ Id = i,  ParkingNum = null}
+               );
+            }
         }
     }
 }

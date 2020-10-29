@@ -1,6 +1,11 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 @import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+select option:disabled {
+    background-color: #000;
+    color:red;
+    font-weight: bold;
+}
 a.navbar-brand {
   white-space: normal;
   text-align: center;

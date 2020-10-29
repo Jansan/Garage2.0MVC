@@ -27,13 +27,18 @@ namespace Garage2._0MVC.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -47,12 +52,94 @@ namespace Garage2._0MVC.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ParkingNum")
+                    b.Property<int?>("ParkingNum")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("ParkingSpace");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1
+                        },
+                        new
+                        {
+                            Id = 2
+                        },
+                        new
+                        {
+                            Id = 3
+                        },
+                        new
+                        {
+                            Id = 4
+                        },
+                        new
+                        {
+                            Id = 5
+                        },
+                        new
+                        {
+                            Id = 6
+                        },
+                        new
+                        {
+                            Id = 7
+                        },
+                        new
+                        {
+                            Id = 8
+                        },
+                        new
+                        {
+                            Id = 9
+                        },
+                        new
+                        {
+                            Id = 10
+                        },
+                        new
+                        {
+                            Id = 11
+                        },
+                        new
+                        {
+                            Id = 12
+                        },
+                        new
+                        {
+                            Id = 13
+                        },
+                        new
+                        {
+                            Id = 14
+                        },
+                        new
+                        {
+                            Id = 15
+                        },
+                        new
+                        {
+                            Id = 16
+                        },
+                        new
+                        {
+                            Id = 17
+                        },
+                        new
+                        {
+                            Id = 18
+                        },
+                        new
+                        {
+                            Id = 19
+                        },
+                        new
+                        {
+                            Id = 20
+                        });
                 });
 
             modelBuilder.Entity("Garage2._0MVC.Models.VehicleModel", b =>
@@ -125,7 +212,7 @@ namespace Garage2._0MVC.Migrations
 
                     b.HasIndex("VehicleModelId");
 
-                    b.ToTable("VehicleModelParkingSpace");
+                    b.ToTable("VehicleModelParkingSpaces");
                 });
 
             modelBuilder.Entity("Garage2._0MVC.Models.VehicleType", b =>

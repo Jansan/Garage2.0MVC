@@ -38,6 +38,8 @@ namespace Garage2._0MVC.Models.ViewModels
 
         [DisplayName("Email")]
         public string MemberEmail { get; set; }
+
+        [DisplayName("User")]
         public int MemberId { get; set; }
 
         //    [DisplayName("Type")]

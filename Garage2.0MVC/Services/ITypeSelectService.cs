@@ -7,5 +7,6 @@ namespace Garage2._0MVC.Services
     public interface ITypeSelectService
     {
         Task<IEnumerable<SelectListItem>> GetTypesAsync();
+
     }
 }
