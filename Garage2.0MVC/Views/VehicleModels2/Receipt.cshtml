@@ -1,0 +1,35 @@
+﻿@model Garage2._0MVC.Models.VehicleModel
+
+@{ 
+    ViewData["Title"] = "Receipt";
+}
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Member.FullName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Member.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RegNum)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RegNum)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ArrivalTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ArrivalTime)
+        </dd>
+        <vc:receipt vehicle-id="@Model.Id" />
+    </dl>
+</div>
+
+<form asp-action="Unpark">
+    <input type="hidden" asp-for="Id"/>
+    <button type="submit" class="btn btn-danger mt-3">Go Back</button>
+    <input type="submit" asp-action="Print" formtarget="_blank" class="btn btn-primary mt-3" value="Print"/>
+</form>

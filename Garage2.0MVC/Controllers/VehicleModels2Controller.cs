@@ -9,6 +9,8 @@ using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
 using Garage2._0MVC.Services;
+using jsreport.AspNetCore;
+using jsreport.Types;
 
 namespace Garage2._0MVC.Controllers
 {
@@ -174,8 +176,8 @@ namespace Garage2._0MVC.Controllers
             return View(vehicleModel);
         }
 
-        // GET: VehicleModels2/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: VehicleModels2/Unpark/5
+        public async Task<IActionResult> Unpark(int? id)
         {
             if (id == null)
             {
@@ -194,15 +196,45 @@ namespace Garage2._0MVC.Controllers
             return View(vehicleModel);
         }
 
-        // POST: VehicleModels2/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: VehicleModels2/Unpark/5
+        [HttpPost, ActionName("Unpark")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> UnparkConfirmed(int id)
         {
             var vehicleModel = await db.VehicleModel.FindAsync(id);
             db.VehicleModel.Remove(vehicleModel);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        // GET: Receipt
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var vehicleModel = await db.VehicleModel
+                .Include(m => m.Member)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (vehicleModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(vehicleModel);
+        }
+        // GET: Print receipt
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> Print(int id)
+        {
+            var vehicleModel = await db.VehicleModel
+                .Include(m => m.Member)
+                .FirstOrDefaultAsync(m => m.Id == id);
+               
+
+            HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+            return View(vehicleModel);
         }
 
         private bool VehicleModelExists(int id)

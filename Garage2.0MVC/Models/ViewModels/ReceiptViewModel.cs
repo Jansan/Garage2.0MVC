@@ -10,6 +10,7 @@ namespace Garage2._0MVC.Models.ViewModels
 {
     public class ReceiptViewModel
     {
+        public int Id { get; set; }
         [DisplayName("Departure Time")]
         public DateTime DepartureTime { get; set; }
 
@@ -19,5 +20,10 @@ namespace Garage2._0MVC.Models.ViewModels
 
         [DisplayName("Price (5:- / min)")]
         public double Price { get; set; }
+
+        
+        
+
+
     }
 }
