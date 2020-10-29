@@ -24,10 +24,10 @@ namespace Garage2._0MVC.Models.ViewModels
         [DisplayName("Parking Number")]
         public int ParkingNumber { get; set; }
 
-        //[DisplayName("Parking Spaces Left")]
-        //public int ParkingSpacesLeft { get; set; }
+        [DisplayName("Parking Spaces Left")]
+        public int ParkingSpacesLeft { get; set; }
 
-        //[DisplayName("Total Spaces")]
-        //public int TotalSpaces { get; set; }
+        [DisplayName("Total Spaces")]
+        public int TotalSpaces { get; set; }
     }
 }

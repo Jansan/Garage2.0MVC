@@ -9,6 +9,7 @@ using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
 using Garage2._0MVC.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Garage2._0MVC.Controllers
 {
@@ -16,32 +17,35 @@ namespace Garage2._0MVC.Controllers
     {
         private readonly Garage2_0MVCContext db;
         private readonly IParkingService parkingService;
-        private readonly ITypeSelectService typeService;
 
-        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService, ITypeSelectService typeService)
+        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService)
         {
             this.db = db;
             this.parkingService = parkingService;
-            this.typeService = typeService;
         }
 
         // GET: VehicleModels2
-        public async Task<IActionResult> Index(string regSearch, VehicleIndexViewModel viewModel)
+        public async Task<IActionResult> Index(/*string regSearch, VehicleIndexViewModel viewModel*/)
+        {
+            var vehicles = await GetVehicleList();
+
+            var model = new VehicleIndexViewModel
+            {
+                Vehicles = vehicles,
+                Types = await GetTypesAsync()
+            };
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Search(string regSearch, VehicleIndexViewModel viewModel)
         {
             bool isRegSearch = !string.IsNullOrWhiteSpace(regSearch);
             bool isTypeSearch = viewModel.Type != null;
 
-            var vehicles = await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
-                .Select(v => new VehicleListViewModel
-                {
-                    Id = v.Id,
-                    Type = v.Type,
-                    RegNum = v.RegNum,
-                    ArrivalTime = v.ArrivalTime,
-                    Owner = v.Member.FullName
-                }).ToListAsync();
+            var vehicles = await GetVehicleList();
 
-            if (isRegSearch && isTypeSearch) 
+            if (isRegSearch && isTypeSearch)
                 vehicles = vehicles.Where(v => v.RegNum.Contains(regSearch) && v.Type == viewModel.Type).ToList();
 
             else if (isRegSearch)
@@ -53,21 +57,39 @@ namespace Garage2._0MVC.Controllers
             var model = new VehicleIndexViewModel
             {
                 Vehicles = vehicles,
-                Types = await typeService.GetTypesAsync()
+                Types = await GetTypesAsync()
             };
 
-            return View(model);
+            return View(nameof(Index), model);
+        }
+
+        public async Task<IEnumerable<SelectListItem>> GetTypesAsync()
+        {
+            return await db.VehicleModel
+                        .Select(v => v.Type)
+                        .Distinct()
+                        .Select
+                        (v => new SelectListItem
+                        {
+                            Text = v.ToString(),
+                            Value = v.ToString()
+                        })
+                        .ToListAsync();
         }
 
 
-        //public async Task<IActionResult> Search(string regSearch)
-        //{
-        //    // Try to make the Search Function here
-        //    // With Error-Msg
-
-
-        //    return View(nameof(Index));
-        //}
+        private async Task<List<VehicleListViewModel>> GetVehicleList()
+        {
+            return await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
+                .Select(v => new VehicleListViewModel
+                {
+                    Id = v.Id,
+                    Type = v.Type,
+                    RegNum = v.RegNum,
+                    ArrivalTime = v.ArrivalTime,
+                    Owner = v.Member.FullName
+                }).ToListAsync();
+        }
 
         // GET: VehicleModels2/Details/5
         public async Task<IActionResult> Details(int? id)
