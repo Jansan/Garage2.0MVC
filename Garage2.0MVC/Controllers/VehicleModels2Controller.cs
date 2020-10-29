@@ -24,22 +24,63 @@ namespace Garage2._0MVC.Controllers
         }
 
         // GET: VehicleModels2
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string regSearch, VehicleIndexViewModel viewModel)
         {
-            var model = await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
-                .Include(v => v.VehicleModelParkingSpaces).ThenInclude(v => v.ParkingSpace)
-                .Select(l => new Vehicle2ListViewModel
-                {
-                    Id = l.Id,
-                    Type = l.VehicleType.Type,
-                    RegNum = l.RegNum,
-                    ArrivalTime = l.ArrivalTime,
-                    Owner = l.Member.FullName,
-                    //ParkingNumber = l.VehicleModelParkingSpaces
-                }).ToListAsync();
+            bool isRegSearch = !string.IsNullOrWhiteSpace(regSearch);
+            bool isTypeSearch = viewModel.Type != null;
+
+            var vehicles = await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
+                .Select(v => new VehicleListViewModel
+            {
+                    Id = v.Id,
+                    Type = v.Type,
+                    RegNum = v.RegNum,
+                    ArrivalTime = v.ArrivalTime,
+                    Owner = v.Member.FullName
+            }).ToListAsync();
+
+            if (isRegSearch)
+            {
+                vehicles = vehicles.Where(v => v.RegNum.Contains(regSearch)).ToList();
+            }
+            else if (isTypeSearch)
+            {
+                vehicles = vehicles.Where(v => v.Type == viewModel.Type).ToList();
+            }
+
+            var model = new VehicleIndexViewModel
+            {
+                Vehicles = vehicles,
+                Types = await TypeAsync()
+            };
 
             return View(model);
         }
+
+        private async Task<IEnumerable<SelectListItem>> TypeAsync()
+        {
+            return await db.VehicleType
+                        .Select(m => m.Type)
+                        .Distinct()
+                        .Select(m => new SelectListItem
+                        {
+                            Text = m.ToString(),
+                            Value = m.ToString()
+                        })
+                        .ToListAsync();
+        }
+
+
+        //public async Task<IActionResult> Search(string regSearch)
+        //{
+        //    // Move to a seperate Search Function
+        //    if (regSearch != null)
+        //    {
+        //        var model = await db.VehicleModel.Where(m => m.RegNum.Contains(regSearch)).ToListAsync();
+        //    }
+
+        //    return View(nameof(Index), model);
+        //}
 
         // GET: VehicleModels2/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -65,8 +106,8 @@ namespace Garage2._0MVC.Controllers
         public IActionResult Create()
         {
             var space = parkingService.GetCurrentParking();
-            
-           
+
+
             //ViewBag.isSuccess = isSuccess;
             //ViewBag.regNum = regNum;
             return View();
@@ -97,7 +138,7 @@ namespace Garage2._0MVC.Controllers
                     Type = viewmodel.Type,
                     VehicleTypeId = (int)viewmodel.Type,
                     MemberId = viewmodel.MemberId
-                   
+
                     //VehicleModelParkingSpaces = new ParkingSpace
                     //{
                     //    ParkingNum = 1
@@ -105,7 +146,7 @@ namespace Garage2._0MVC.Controllers
                 };
                 for (int i = 0; i < capacity; i++)
                 {
-                    
+
                 }
 
 
