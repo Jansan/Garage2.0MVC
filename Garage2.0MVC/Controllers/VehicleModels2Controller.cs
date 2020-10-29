@@ -9,6 +9,7 @@ using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
 using Garage2._0MVC.Services;
+using System.IO;
 
 namespace Garage2._0MVC.Controllers
 {
@@ -16,11 +17,16 @@ namespace Garage2._0MVC.Controllers
     {
         private readonly Garage2_0MVCContext db;
         private readonly IParkingService parkingService;
+        private readonly IParkingCapacityService parkingCapacityService;
+        private readonly ITypeSelectService typeSelectService;
 
-        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService)
+        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService,
+            IParkingCapacityService parkingCapacityService, ITypeSelectService typeSelectService)
         {
             this.db = db;
             this.parkingService = parkingService;
+            this.parkingCapacityService = parkingCapacityService;
+            this.typeSelectService = typeSelectService;
         }
 
         // GET: VehicleModels2
@@ -65,8 +71,8 @@ namespace Garage2._0MVC.Controllers
         public IActionResult Create()
         {
             var space = parkingService.GetCurrentParking();
-            
-           
+            var vehicleCapacity = parkingCapacityService.GetVehicleCapacity(); //TODO flytta till Post annars ta bort
+
             //ViewBag.isSuccess = isSuccess;
             //ViewBag.regNum = regNum;
             return View();
@@ -82,10 +88,8 @@ namespace Garage2._0MVC.Controllers
             VehicleModel vehicle;
             if (ModelState.IsValid)
             {
-                var capacity = db.VehicleType.Find((int)viewmodel.Type).Capacity;       //Hur göra databasuppslagning i property
+                var capacity = (int)db.VehicleType.Find((int)viewmodel.Type).Capacity;
 
-                //var parkingviewmodel = new ParkingViewModel();
-                //var pLeft = 2;//parkingviewmodel.ParkingSpacesLeft
                 vehicle = new VehicleModel
                 {
                     ArrivalTime = DateTime.Now,
@@ -96,21 +100,82 @@ namespace Garage2._0MVC.Controllers
                     RegNum = viewmodel.RegNum.ToUpper(),
                     Type = viewmodel.Type,
                     VehicleTypeId = (int)viewmodel.Type,
-                    MemberId = viewmodel.MemberId
-                   
-                    //VehicleModelParkingSpaces = new ParkingSpace
-                    //{
-                    //    ParkingNum = 1
-                    //}
+                    MemberId = viewmodel.MemberId,
+
                 };
+
+
+                //int? maxParkingNum = db.ParkingSpace.Select(p => p.ParkingNum).Max();       //TODO fixa så att klarar av en tom databas
+                db.Add(vehicle);
+
                 for (int i = 0; i < capacity; i++)
                 {
-                    
+                    var freeParkingSpace = db.ParkingSpace.Where(p => p.ParkingNum == null).FirstOrDefault();
+                    freeParkingSpace.ParkingNum = freeParkingSpace.Id;
+
+                    var vehicleSpace = new VehicleModelParkingSpace();
+                    vehicleSpace.VehicleModel = vehicle;
+                    vehicleSpace.ParkingSpace = freeParkingSpace;
+                    db.Add(vehicleSpace);
+                    await db.SaveChangesAsync();
+
                 }
+                //var vehicleSpace = vehicle.VehicleModelParkingSpaces.Where(v=>v.VehicleModelId == vehicle.Id)
 
 
-                db.Add(vehicle);
-                await db.SaveChangesAsync();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                //var maxParkingNum = db.ParkingSpace.Where(p => p.ParkingNum == null).Take(capacity);
+
+                ////var firstNull = maxParkingNum[2];
+                //var firstFreeParkingSpace = maxParkingNum.Select(v => v.Id).FirstOrDefault();
+
+
+                //var first = Enumerable.Range(1, 20).Except(db.ParkingSpace.Where(p => p.ParkingNum != null).Select(p => p.Id)).FirstOrDefault();
+                //int[] comparer = new int[capacity];
+                //var result = Enumerable.Range(1, 20).Except(db.ParkingSpace.Where(p => p.ParkingNum != null).Select(p => p.Id)).SequenceEqual(comparer);
+
+                ////TODO tomma parkeringsnummer ska fyllas på först
+                //for (int i = 0; i < (int)capacity; i++)
+                //{
+                //    var parkingSpace = new ParkingSpace();
+                //    //if (maxParkingNum is null)
+                //    //{
+                //    //    maxParkingNum = 0;
+                //    //}
+                //    db.ParkingSpace.Where(p => p.Id == first).Select(p => p.ParkingNum)
+
+                //    parkingSpace.ParkingNum = firstFreeParkingSpace + i;
+                //    db.Add(parkingSpace);
+                //    var vehicleModelParkingSpace = new VehicleModelParkingSpace();
+                //    vehicleModelParkingSpace.VehicleModel = vehicle;
+                //    vehicleModelParkingSpace.ParkingSpace = parkingSpace;
+                //    db.Add(vehicleModelParkingSpace);
+                //}
+
+
+
+
+                db.VehicleModel.Include(v => v.VehicleModelParkingSpaces).ThenInclude(v => v.ParkingSpace);
+                var space = parkingService.GetCurrentParking();
+                var vehicleCapacity = parkingCapacityService.GetVehicleCapacity();
+
+
+
+                //db.Add(vehicle);
+                //await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -201,6 +266,8 @@ namespace Garage2._0MVC.Controllers
         {
             var vehicleModel = await db.VehicleModel.FindAsync(id);
             db.VehicleModel.Remove(vehicleModel);
+
+            //await db.VehicleModelParkingSpaces.Include(v => v.ParkingSpace).FirstOrDefaultAsync(v => v.VehicleModelId == id);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

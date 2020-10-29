@@ -41,6 +41,7 @@ namespace Garage2._0MVC
             services.AddScoped<ITypeSelectService, TypeSelectService>();
             services.AddScoped<IMemberSelectService, MemberSelectService>();
             services.AddScoped<IParkingService, ParkingService>();
+            services.AddTransient<IParkingCapacityService, ParkingCapacityService>();
 
             services.AddDbContext<Garage2_0MVCContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Garage2_0MVCContext")).EnableSensitiveDataLogging());

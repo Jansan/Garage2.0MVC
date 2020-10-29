@@ -47,7 +47,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="MemberId" class="control-label"></label>
+                <label asp-for="MemberId" class="control-label"></label>        @*TODO Fixa så att visar owner*@
                 <select asp-items="@await memberService.GetMembersAsync()" asp-for="MemberId" class="form-control"></select>
                 <span asp-validation-for="MemberId" class="text-danger"></span>
             </div>
