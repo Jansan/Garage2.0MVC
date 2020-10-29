@@ -15,6 +15,7 @@ using jsreport.Local;
 using jsreport.Binary;
 using Garage2._0MVC.Services;
 
+
 namespace Garage2._0MVC
 {
     public class Startup

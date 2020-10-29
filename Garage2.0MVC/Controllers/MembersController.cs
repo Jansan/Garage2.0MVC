@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
+using Garage2._0MVC.Models.ViewModels;
 
 namespace Garage2._0MVC.Controllers
 {
@@ -22,7 +23,30 @@ namespace Garage2._0MVC.Controllers
         // GET: Members
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Member.ToListAsync());
+            var model = _context.Member
+                .Include(m => m.VehicleModels)
+                .Select(m => new MemberViewModel
+                {
+                    Id = m.Id,
+                    FullName = m.FullName,
+                    AmountVehicles = m.VehicleModels.Count()
+                });
+            return View(await model.ToListAsync());
+        }
+        // GET: Members ViewModel
+        public async Task<IActionResult> Member()
+        {
+
+            var model = _context.Member
+                .Include(m => m.VehicleModels)
+                .Select(m => new MemberViewModel
+                {
+                    Id = m.Id,
+                    FullName = m.FullName,
+                    AmountVehicles = m.VehicleModels.Count()
+                });
+
+            return View(await model.ToListAsync());
         }
 
         // GET: Members/Details/5
@@ -32,9 +56,21 @@ namespace Garage2._0MVC.Controllers
             {
                 return NotFound();
             }
-
             var member = await _context.Member
+                .Include(v => v.VehicleModels)
+                .ThenInclude(v => v.VehicleType)
+                .Select(m => new MemberDetailsViewModel
+                {
+                     Id = m.Id,
+                     FirstName = m.FirstName,
+                     LastName = m.LastName,
+                     Email = m.Email,
+                     VehicleModels = m.VehicleModels
+                })
                 .FirstOrDefaultAsync(m => m.Id == id);
+                
+
+            
             if (member == null)
             {
                 return NotFound();
