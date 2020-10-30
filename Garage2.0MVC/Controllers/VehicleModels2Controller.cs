@@ -24,7 +24,7 @@ namespace Garage2._0MVC.Controllers
         private readonly IParkingCapacityService parkingCapacityService;
 
         public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService,
-            IParkingCapacityService parkingCapacityService)
+            IParkingCapacityService parkingCapacityService, IMemberSelectService memberSelectService)
         {
             this.db = db;
             this.parkingService = parkingService;
