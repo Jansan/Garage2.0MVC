@@ -67,14 +67,17 @@ namespace Garage2._0MVC.Controllers
 
         private async Task<List<VehicleListViewModel>> GetVehicleList()
         {
-            return await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
+            //var p = db.VehicleModel.Include(v => v.VehicleModelParkingSpaces).Select(v => v.VehicleModelParkingSpaces);
+            //p.par
+            return await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType).Include(v => v.VehicleModelParkingSpaces).ThenInclude(p => p.ParkingSpace)
                 .Select(v => new VehicleListViewModel
                 {
                     Id = v.Id,
                     Type = v.Type,
                     RegNum = v.RegNum,
                     ArrivalTime = v.ArrivalTime,
-                    Owner = v.Member.FullName
+                    Owner = v.Member.FullName,
+                    ParkingNumber = v.VehicleModelParkingSpaces.Select(p => p.ParkingSpace.ParkingNum).ToList()
                 }).ToListAsync();
         }
 
@@ -119,8 +122,7 @@ namespace Garage2._0MVC.Controllers
             VehicleModel vehicle;
             if (ModelState.IsValid)
             {
-                var capacity = (int)db.VehicleType.Find((int)viewmodel.Type +1).Capacity;          //Ger null reference exception för car
-                //TODO round up for motorcycle capacity
+                var capacity = (int)db.VehicleType.Find((int)viewmodel.Type + 1).Capacity;
                 vehicle = new VehicleModel
                 {
                     ArrivalTime = DateTime.Now,
@@ -130,13 +132,10 @@ namespace Garage2._0MVC.Controllers
                     NumWheels = viewmodel.NumWheels,
                     RegNum = viewmodel.RegNum.ToUpper(),
                     Type = viewmodel.Type,
-                    VehicleTypeId = (int)viewmodel.Type +1,
+                    VehicleTypeId = (int)viewmodel.Type + 1,
                     MemberId = viewmodel.MemberId,
 
                 };
-
-
-                //int? maxParkingNum = db.ParkingSpace.Select(p => p.ParkingNum).Max();      
 
                 int firstFree = GetFirstFreeParking(capacity);
                 if (firstFree != 0)
@@ -145,14 +144,13 @@ namespace Garage2._0MVC.Controllers
 
                     for (int i = 0; i < capacity; i++)
                     {
-                        //var freeParkingSpace = db.ParkingSpace.Where(p => p.ParkingNum == null).FirstOrDefault();
-                        //freeParkingSpace.ParkingNum = freeParkingSpace.Id;
-
                         var parkingSpace = db.ParkingSpace.Where(p => p.Id == firstFree + i).FirstOrDefault();
                         parkingSpace.ParkingNum = firstFree + i;
                         var vehicleSpace = new VehicleModelParkingSpace();
                         vehicleSpace.VehicleModel = vehicle;
                         vehicleSpace.ParkingSpace = parkingSpace;
+
+
                         db.Add(vehicleSpace);
 
                         await db.SaveChangesAsync();
@@ -160,65 +158,11 @@ namespace Garage2._0MVC.Controllers
                     }
 
                 }
-                //Populates the parking according to vehicle capacity
-                //var vehicleSpace = vehicle.VehicleModelParkingSpaces.Where(v=>v.VehicleModelId == vehicle.Id)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                //var maxParkingNum = db.ParkingSpace.Where(p => p.ParkingNum == null).Take(capacity);
-
-                ////var firstNull = maxParkingNum[2];
-                //var firstFreeParkingSpace = maxParkingNum.Select(v => v.Id).FirstOrDefault();
-
-
-                //var first = Enumerable.Range(1, 20).Except(db.ParkingSpace.Where(p => p.ParkingNum != null).Select(p => p.Id)).FirstOrDefault();
-                //int[] comparer = new int[capacity];
-                //var result = Enumerable.Range(1, 20).Except(db.ParkingSpace.Where(p => p.ParkingNum != null).Select(p => p.Id)).SequenceEqual(comparer);
-
-                ////TODO tomma parkeringsnummer ska fyllas på först
-                //for (int i = 0; i < (int)capacity; i++)
-                //{
-                //    var parkingSpace = new ParkingSpace();
-                //    //if (maxParkingNum is null)
-                //    //{
-                //    //    maxParkingNum = 0;
-                //    //}
-                //    db.ParkingSpace.Where(p => p.Id == first).Select(p => p.ParkingNum)
-
-                //    parkingSpace.ParkingNum = firstFreeParkingSpace + i;
-                //    db.Add(parkingSpace);
-                //    var vehicleModelParkingSpace = new VehicleModelParkingSpace();
-                //    vehicleModelParkingSpace.VehicleModel = vehicle;
-                //    vehicleModelParkingSpace.ParkingSpace = parkingSpace;
-                //    db.Add(vehicleModelParkingSpace);
-                //}
-
-
-
 
                 db.VehicleModel.Include(v => v.VehicleModelParkingSpaces).ThenInclude(v => v.ParkingSpace);
                 var space = parkingService.GetCurrentParking();
                 var vehicleCapacity = parkingCapacityService.GetVehicleCapacity();
 
-
-
-                //db.Add(vehicle);
-                //await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -230,6 +174,7 @@ namespace Garage2._0MVC.Controllers
         private int GetFirstFreeParking(int capacity)
         {
             var result = Enumerable.Range(1, 20).Except(db.ParkingSpace.Where(p => p.ParkingNum != null).Select(p => p.Id));
+
             if (capacity == 1)
             {
                 return result.FirstOrDefault();
@@ -335,7 +280,19 @@ namespace Garage2._0MVC.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var vehicleModel = await db.VehicleModel.FindAsync(id);
+
+            //var parkingSpaces = db.VehicleModelParkingSpaces.Include(p=>p.ParkingSpace)
+            //    .Where(v => v.VehicleModelId == id).Select(p => p.ParkingSpace.ParkingNum);
+            //parkingSpaces = null;
+
+
+            await db.VehicleModelParkingSpaces.Include(p => p.ParkingSpace)
+                .Where(v => v.VehicleModelId == id).ForEachAsync(p => p.ParkingSpace.ParkingNum = null);
+
+
             db.VehicleModel.Remove(vehicleModel);
+
+
 
             //await db.VehicleModelParkingSpaces.Include(v => v.ParkingSpace).FirstOrDefaultAsync(v => v.VehicleModelId == id);
             await db.SaveChangesAsync();

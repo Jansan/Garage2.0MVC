@@ -22,12 +22,13 @@ namespace Garage2._0MVC.Models.ViewModels
         public string Owner { get; set; }
 
         [DisplayName("Parking Number")]
-        public int ParkingNumber { get; set; }
+        public ICollection<int?> ParkingNumber { get; set; }
 
-        [DisplayName("Parking Spaces Left")]
-        public int ParkingSpacesLeft { get; set; }
+        //[DisplayName("Parking Spaces Left")]
+        //public int ParkingSpacesLeft { get; set; }
 
-        [DisplayName("Total Spaces")]
-        public int TotalSpaces { get; set; }
+        //[DisplayName("Total Spaces")]
+        //public int TotalSpaces { get; set; }
+
     }
 }
