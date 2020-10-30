@@ -18,11 +18,13 @@ namespace Garage2._0MVC.Controllers
     {
         private readonly Garage2_0MVCContext db;
         private readonly IParkingService parkingService;
+        private readonly IMemberSelectService memberSelectService;
 
-        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService)
+        public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService, IMemberSelectService memberSelectService)
         {
             this.db = db;
             this.parkingService = parkingService;
+            this.memberSelectService = memberSelectService;
         }
 
         // GET: VehicleModels2
@@ -129,14 +131,26 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await db.VehicleModel.FindAsync(id);
-            if (vehicleModel == null)
+                //.Include(m => m.Member)
+                //.ThenInclude(v => v.FullName)
+            var vehicleEditViewModel = await db.VehicleModel
+                .Include(m => m.Member)
+                .Select(v => new VehicleEditViewModel
+                {
+                    Id = v.Id,
+                    Color = v.Color,
+                    Brand = v.Brand,
+                    Model = v.Model,
+                    MemberId = v.MemberId
+                    
+                }).FirstOrDefaultAsync(v => v.Id == id);
+
+            if (vehicleEditViewModel == null)
             {
                 return NotFound();
             }
-            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
-            return View(vehicleModel);
+            
+            return View(vehicleEditViewModel);
         }
 
         // POST: VehicleModels2/Edit/5
@@ -144,23 +158,41 @@ namespace Garage2._0MVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,RegNum,Color,Brand,Model,NumWheels,ArrivalTime,VehicleTypeId,MemberId")] VehicleModel vehicleModel)
+        public async Task<IActionResult> Edit(int id, VehicleEditViewModel vehicleEditViewModel)
         {
-            if (id != vehicleModel.Id)
+            if (id != vehicleEditViewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var vehicle = new VehicleModel
+                {
+                    Id = vehicleEditViewModel.Id,
+                    Color = vehicleEditViewModel.Color,
+                    Brand = vehicleEditViewModel.Brand,
+                    Model = vehicleEditViewModel.Model,
+                    MemberId = vehicleEditViewModel.MemberId
+
+                    
+                };
                 try
                 {
-                    db.Update(vehicleModel);
+                   
+                    db.Entry(vehicle).State = EntityState.Modified;
+                    db.Entry(vehicle).Property(v => v.ArrivalTime).IsModified = false;
+                    db.Entry(vehicle).Property(v => v.RegNum).IsModified = false;
+                    db.Entry(vehicle).Property(v => v.Type).IsModified = false;
+                    db.Entry(vehicle).Property(v => v.VehicleTypeId).IsModified = false;
+
+
+
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VehicleModelExists(vehicleModel.Id))
+                    if (!VehicleModelExists(vehicle.Id))
                     {
                         return NotFound();
                     }
@@ -171,9 +203,8 @@ namespace Garage2._0MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
-            return View(vehicleModel);
+            
+            return View(vehicleEditViewModel);
         }
 
         // GET: VehicleModels2/Unpark/5
