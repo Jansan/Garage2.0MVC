@@ -19,26 +19,23 @@ namespace Garage2._0MVC.Controllers
         private readonly Garage2_0MVCContext db;
         private readonly IParkingService parkingService;
         private readonly IParkingCapacityService parkingCapacityService;
-        private readonly ITypeSelectService typeSelectService;
 
         public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService,
-            IParkingCapacityService parkingCapacityService, ITypeSelectService typeSelectService)
+            IParkingCapacityService parkingCapacityService)
         {
             this.db = db;
             this.parkingService = parkingService;
             this.parkingCapacityService = parkingCapacityService;
-            this.typeSelectService = typeSelectService;
         }
 
         // GET: VehicleModels2
-        public async Task<IActionResult> Index(/*string regSearch, VehicleIndexViewModel viewModel*/)
+        public async Task<IActionResult> Index()
         {
             var vehicles = await GetVehicleList();
 
             var model = new VehicleIndexViewModel
             {
                 Vehicles = vehicles,
-                Types = await GetTypesAsync()
             };
 
             return View(model);
@@ -63,26 +60,10 @@ namespace Garage2._0MVC.Controllers
             var model = new VehicleIndexViewModel
             {
                 Vehicles = vehicles,
-                Types = await GetTypesAsync()
             };
 
             return View(nameof(Index), model);
         }
-
-        public async Task<IEnumerable<SelectListItem>> GetTypesAsync()
-        {
-            return await db.VehicleModel
-                        .Select(v => v.Type)
-                        .Distinct()
-                        .Select
-                        (v => new SelectListItem
-                        {
-                            Text = v.ToString(),
-                            Value = v.ToString()
-                        })
-                        .ToListAsync();
-        }
-
 
         private async Task<List<VehicleListViewModel>> GetVehicleList()
         {
@@ -158,19 +139,20 @@ namespace Garage2._0MVC.Controllers
                 //int? maxParkingNum = db.ParkingSpace.Select(p => p.ParkingNum).Max();       //TODO fixa så att klarar av en tom databas
                 db.Add(vehicle);
 
+
                 for (int i = 0; i < capacity; i++)
                 {
                     var freeParkingSpace = db.ParkingSpace.Where(p => p.ParkingNum == null).FirstOrDefault();
                     freeParkingSpace.ParkingNum = freeParkingSpace.Id;
 
-                    var vehicleSpace = new VehicleModelParkingSpace();
-                    vehicleSpace.VehicleModel = vehicle;
-                    vehicleSpace.ParkingSpace = freeParkingSpace;
-                    db.Add(vehicleSpace);
+                    var vSpace = new VehicleModelParkingSpace();
+                    vSpace.VehicleModel = vehicle;
+                    vSpace.ParkingSpace = freeParkingSpace;
+                    db.Add(vSpace);
                     await db.SaveChangesAsync();
 
                 }
-                //var vehicleSpace = vehicle.VehicleModelParkingSpaces.Where(v=>v.VehicleModelId == vehicle.Id)
+                var vehicleSpace = vehicle.VehicleModelParkingSpaces.Where(v => v.VehicleModelId == vehicle.Id);
 
 
 

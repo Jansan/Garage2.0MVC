@@ -9,7 +9,7 @@ namespace Garage2._0MVC.Models.ViewModels
     public class ParkingViewModel
     {
         [DisplayName("Parking Spaces Left")]
-        public int ParkingSpacesLeft { get; set; }
+        public double ParkingSpacesLeft { get; set; }
 
         [DisplayName("Total Parking Spaces")]
         public int TotalParkingSpaces { get; set; }
