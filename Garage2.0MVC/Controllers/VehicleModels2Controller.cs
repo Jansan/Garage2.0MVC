@@ -56,7 +56,22 @@ namespace Garage2._0MVC.Controllers
             var vehicleModel = await db.VehicleModel
                 .Include(v => v.Member)
                 .Include(v => v.VehicleType)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Select(v => new VehicleDetailsViewModel
+                {
+                    Id = v.Id,
+                    Type = v.Type,
+                    RegNum = v.RegNum,
+                    Brand = v.Brand,
+                    Model = v.Model,
+                    Color = v.Color,
+                    NumberWeels = v.NumWheels,
+                    Owner = v.Member.FullName,
+                    ArrivalTime = v.ArrivalTime
+
+                })
+                .FirstOrDefaultAsync(v => v.Id == id);
+                
+
             if (vehicleModel == null)
             {
                 return NotFound();
