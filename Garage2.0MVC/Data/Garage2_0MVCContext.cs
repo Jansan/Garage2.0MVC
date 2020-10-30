@@ -28,7 +28,7 @@ namespace Garage2._0MVC.Data
             modelBuilder.Entity<VehicleType>()
                 .HasData(
                     new VehicleType { Id = 1, Type = VehicleTypeEnum.Car, Capacity = 1 },
-                    new VehicleType { Id = 2, Type = VehicleTypeEnum.Motorcycle, Capacity = 0.3 },
+                    new VehicleType { Id = 2, Type = VehicleTypeEnum.Motorcycle, Capacity = 1 },
                     new VehicleType { Id = 3, Type = VehicleTypeEnum.Bus, Capacity = 2 },
                     new VehicleType { Id = 4, Type = VehicleTypeEnum.Boat, Capacity = 2 },
                     new VehicleType { Id = 5, Type = VehicleTypeEnum.Airplane, Capacity = 3 }

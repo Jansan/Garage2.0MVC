@@ -138,8 +138,8 @@ namespace Garage2._0MVC.Controllers
             VehicleModel vehicle;
             if (ModelState.IsValid)
             {
-                var capacity = (int)db.VehicleType.Find((int)viewmodel.Type).Capacity;
-
+                var capacity = (int)db.VehicleType.Find((int)viewmodel.Type).Capacity;          //Ger null reference exception för car
+                //TODO round up for motorcycle capacity
                 vehicle = new VehicleModel
                 {
                     ArrivalTime = DateTime.Now,
@@ -155,22 +155,34 @@ namespace Garage2._0MVC.Controllers
                 };
 
 
-                //int? maxParkingNum = db.ParkingSpace.Select(p => p.ParkingNum).Max();       //TODO fixa så att klarar av en tom databas
-                db.Add(vehicle);
+                //int? maxParkingNum = db.ParkingSpace.Select(p => p.ParkingNum).Max();      
 
-                for (int i = 0; i < capacity; i++)
+                int firstFree = GetFirstFreeParking(capacity);
+                if (firstFree != 0)
                 {
-                    var freeParkingSpace = db.ParkingSpace.Where(p => p.ParkingNum == null).FirstOrDefault();
-                    freeParkingSpace.ParkingNum = freeParkingSpace.Id;
+                    db.Add(vehicle);
 
-                    var vehicleSpace = new VehicleModelParkingSpace();
-                    vehicleSpace.VehicleModel = vehicle;
-                    vehicleSpace.ParkingSpace = freeParkingSpace;
-                    db.Add(vehicleSpace);
-                    await db.SaveChangesAsync();
+                    for (int i = 0; i < capacity; i++)
+                    {
+                        //var freeParkingSpace = db.ParkingSpace.Where(p => p.ParkingNum == null).FirstOrDefault();
+                        //freeParkingSpace.ParkingNum = freeParkingSpace.Id;
+
+                        var parkingSpace = db.ParkingSpace.Where(p => p.Id == firstFree + i).FirstOrDefault();
+                        parkingSpace.ParkingNum = firstFree + i;
+                        var vehicleSpace = new VehicleModelParkingSpace();
+                        vehicleSpace.VehicleModel = vehicle;
+                        vehicleSpace.ParkingSpace = parkingSpace;
+                        db.Add(vehicleSpace);
+
+                        await db.SaveChangesAsync();
+
+                    }
 
                 }
+                //Populates the parking according to vehicle capacity
                 //var vehicleSpace = vehicle.VehicleModelParkingSpaces.Where(v=>v.VehicleModelId == vehicle.Id)
+
+
 
 
 
@@ -232,6 +244,33 @@ namespace Garage2._0MVC.Controllers
             //ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id",vehicle.MemberId);
             //ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicle.VehicleTypeId);
             return View(viewmodel);
+        }
+
+        private int GetFirstFreeParking(int capacity)
+        {
+            var result = Enumerable.Range(1, 20).Except(db.ParkingSpace.Where(p => p.ParkingNum != null).Select(p => p.Id));
+            if (capacity == 1)
+            {
+                return result.FirstOrDefault();
+            }
+            if (capacity == 2)
+            {
+                for (int i = 0; i < result.Count() - 2; i++)
+                {
+                    if (result.ElementAt(i + 1) - result.ElementAt(i) == 1 && result.ElementAt(i + 2) - result.ElementAt(i + 1) == 1)
+                        return result.ElementAt(i);
+                }
+            }
+            if (capacity == 3)
+            {
+                for (int i = 0; i < result.Count() - 3; i++)
+                {
+                    if (result.ElementAt(i + 1) - result.ElementAt(i) == 1 && result.ElementAt(i + 2) - result.ElementAt(i + 1) == 1
+                        && result.ElementAt(i + 3) - result.ElementAt(i + 2) == 1)
+                        return result.ElementAt(i);
+                }
+            }
+            return 0;
         }
 
         // GET: VehicleModels2/Edit/5
