@@ -71,8 +71,6 @@ namespace Garage2._0MVC.Controllers
 
         private async Task<List<VehicleListViewModel>> GetVehicleList()
         {
-            //var p = db.VehicleModel.Include(v => v.VehicleModelParkingSpaces).Select(v => v.VehicleModelParkingSpaces);
-            //p.par
             return await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType).Include(v => v.VehicleModelParkingSpaces).ThenInclude(p => p.ParkingSpace)
                 .Select(v => new VehicleListViewModel
                 {
@@ -123,11 +121,6 @@ namespace Garage2._0MVC.Controllers
         // GET: VehicleModels2/Create
         public IActionResult Create()
         {
-            var space = parkingService.GetCurrentParking();
-            var vehicleCapacity = parkingCapacityService.GetVehicleCapacity(); //TODO flytta till Post annars ta bort
-
-            //ViewBag.isSuccess = isSuccess;
-            //ViewBag.regNum = regNum;
             return View();
         }
 
@@ -226,8 +219,6 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-                //.Include(m => m.Member)
-                //.ThenInclude(v => v.FullName)
             var vehicleEditViewModel = await db.VehicleModel
                 .Include(m => m.Member)
                 .Select(v => new VehicleEditViewModel
@@ -268,20 +259,15 @@ namespace Garage2._0MVC.Controllers
                     Color = vehicleEditViewModel.Color,
                     Brand = vehicleEditViewModel.Brand,
                     Model = vehicleEditViewModel.Model,
-                    MemberId = vehicleEditViewModel.MemberId
-
-                    
+                    MemberId = vehicleEditViewModel.MemberId   
                 };
                 try
                 {
-                   
                     db.Entry(vehicle).State = EntityState.Modified;
                     db.Entry(vehicle).Property(v => v.ArrivalTime).IsModified = false;
                     db.Entry(vehicle).Property(v => v.RegNum).IsModified = false;
                     db.Entry(vehicle).Property(v => v.Type).IsModified = false;
                     db.Entry(vehicle).Property(v => v.VehicleTypeId).IsModified = false;
-
-
 
                     await db.SaveChangesAsync();
                 }
@@ -314,6 +300,7 @@ namespace Garage2._0MVC.Controllers
                 .Include(v => v.Member)
                 .Include(v => v.VehicleType)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (vehicleModel == null)
             {
                 return NotFound();
@@ -328,10 +315,6 @@ namespace Garage2._0MVC.Controllers
         public async Task<IActionResult> UnparkConfirmed(int id)
         {
             var vehicleModel = await db.VehicleModel.FindAsync(id);
-
-            //var parkingSpaces = db.VehicleModelParkingSpaces.Include(p=>p.ParkingSpace)
-            //    .Where(v => v.VehicleModelId == id).Select(p => p.ParkingSpace.ParkingNum);
-            //parkingSpaces = null;
 
 
             await db.VehicleModelParkingSpaces.Include(p => p.ParkingSpace)

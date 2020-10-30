@@ -61,16 +61,16 @@ namespace Garage2._0MVC.Controllers
                 .ThenInclude(v => v.VehicleType)
                 .Select(m => new MemberDetailsViewModel
                 {
-                     Id = m.Id,
-                     FirstName = m.FirstName,
-                     LastName = m.LastName,
-                     Email = m.Email,
-                     VehicleModels = m.VehicleModels
+                    Id = m.Id,
+                    FirstName = m.FirstName,
+                    LastName = m.LastName,
+                    Email = m.Email,
+                    VehicleModels = m.VehicleModels
                 })
                 .FirstOrDefaultAsync(m => m.Id == id);
-                
 
-            
+
+
             if (member == null)
             {
                 return NotFound();
@@ -119,11 +119,23 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Member.FindAsync(id);
+            //var member = await _context.Member.FindAsync(id);
+
+            var member = await _context.Member
+                .Select(v => new MemberEditViewModel
+                {
+                    Id = v.Id,
+                    FirstName = v.FirstName,
+                    LastName = v.LastName,
+                    Email = v.Email
+
+                }).FirstOrDefaultAsync(v => v.Id == id);
+
             if (member == null)
             {
                 return NotFound();
             }
+
             return View(member);
         }
 

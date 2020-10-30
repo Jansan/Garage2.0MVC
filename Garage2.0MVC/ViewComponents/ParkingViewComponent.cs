@@ -14,15 +14,13 @@ namespace Garage2._0MVC.ViewComponents
     public class ParkingViewComponent : ViewComponent
     {
         private readonly Garage2_0MVCContext db;
-        private readonly IParkingCapacityService parking;
 
         // Sets Total Parking Space in this class
-        private const int totalParkingSpaces = 5;
+        private const int totalParkingSpaces = 20;
 
-        public ParkingViewComponent(Garage2_0MVCContext db, IParkingCapacityService parking)
+        public ParkingViewComponent(Garage2_0MVCContext db)
         {
             this.db = db;
-            this.parking = parking;
         }
 
         // Calculates parking space left & total parking ppaces

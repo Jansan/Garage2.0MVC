@@ -12,7 +12,7 @@ namespace Garage2._0MVC.Services
     {
         private readonly Garage2_0MVCContext db;
 
-        private const int totalParkingSpaces = 5;
+        private const int totalParkingSpaces = 20;
 
         public ParkingService(Garage2_0MVCContext db)
         {
