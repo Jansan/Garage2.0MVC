@@ -26,6 +26,8 @@ namespace Garage2._0MVC.Models
         [EmailAddress]
         [Remote(action: "CheckUniqueEmail", controller:"Members")]
         public string Email { get; set; }
+
+        [DisplayName("Owner")]
         public string FullName => $"{FirstName} {LastName}";
 
         
