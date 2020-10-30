@@ -28,8 +28,14 @@ namespace Garage2._0MVC.Services
 
         public int GetCurrentParking()
         {
-            var vehicles = db.VehicleModel.Count();      //TODO parkingspaces.count
-            var space = totalParkingSpaces - vehicles;
+            var vehicles = db.VehicleModel.Include(v => v.VehicleType).Select(v => v.VehicleType.Capacity).ToList();
+            int sum = 0;
+
+            foreach (var item in vehicles)
+            {
+                sum += item;
+            }
+            var space = totalParkingSpaces - sum;
             return space;
 
         }

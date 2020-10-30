@@ -119,7 +119,7 @@ namespace Garage2._0MVC.Controllers
             VehicleModel vehicle;
             if (ModelState.IsValid)
             {
-                var capacity = (int)db.VehicleType.Find((int)viewmodel.Type).Capacity;          //Ger null reference exception för car
+                var capacity = (int)db.VehicleType.Find((int)viewmodel.Type +1).Capacity;          //Ger null reference exception för car
                 //TODO round up for motorcycle capacity
                 vehicle = new VehicleModel
                 {
@@ -130,7 +130,7 @@ namespace Garage2._0MVC.Controllers
                     NumWheels = viewmodel.NumWheels,
                     RegNum = viewmodel.RegNum.ToUpper(),
                     Type = viewmodel.Type,
-                    VehicleTypeId = (int)viewmodel.Type,
+                    VehicleTypeId = (int)viewmodel.Type +1,
                     MemberId = viewmodel.MemberId,
 
                 };

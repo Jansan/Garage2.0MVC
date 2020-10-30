@@ -1,5 +1,6 @@
 ﻿@model VehicleIndexViewModel
 @inject Garage2._0MVC.Services.IFilterService service
+@inject Garage2._0MVC.Services.IParkingService parkingService
 
 @{
     ViewData["Title"] = "Index";
@@ -7,9 +8,20 @@
 
 <h1>Vehicle Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (parkingService.GetCurrentParking() > 0)
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+else
+{
+    <p>
+        <a href="myModal" data-toggle="modal" data-target="#myModal">Park a vehicle</a>
+    </p>
+}
+
+
 
 <!--Vehicle Search-->
 <form asp-action="Search">
@@ -32,3 +44,21 @@
 <!--Vehicle List-->
 <partial name="VehiclePartial" model="@Model.Vehicles" />
 
+
+<div class="container">
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Parking is full, would you like to unpark?</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="float-right">
+                        <a asp-action="Index">Back to vehicles list</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

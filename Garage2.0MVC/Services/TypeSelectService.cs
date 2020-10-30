@@ -25,7 +25,7 @@ namespace Garage2._0MVC.Services
         
         public async Task<IEnumerable<SelectListItem>> GetTypesAsync()
         {
-            var space = (double)parkingService.GetCurrentParking();
+            var space = parkingService.GetCurrentParking();
             var capacity = parkingCapacityService.GetVehicleCapacity();
             return await db.VehicleType
                         .Select
