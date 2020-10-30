@@ -31,7 +31,7 @@ namespace Garage2._0MVC.ViewComponents
         {
             var total = totalParkingSpaces;
             var vehicles = await db.VehicleModel.Include(v => v.VehicleType).Select(v => v.VehicleType.Capacity).ToListAsync();
-            var sum = 0;
+            int sum = 0;
 
             foreach (var item in vehicles)
             {
