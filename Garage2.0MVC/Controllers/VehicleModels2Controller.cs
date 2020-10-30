@@ -9,6 +9,8 @@ using Garage2._0MVC.Data;
 using Garage2._0MVC.Models;
 using Garage2._0MVC.Models.ViewModels;
 using Garage2._0MVC.Services;
+using jsreport.AspNetCore;
+using jsreport.Types;
 using Microsoft.Extensions.Logging;
 using System.IO;
 
@@ -18,6 +20,7 @@ namespace Garage2._0MVC.Controllers
     {
         private readonly Garage2_0MVCContext db;
         private readonly IParkingService parkingService;
+        private readonly IMemberSelectService memberSelectService;
         private readonly IParkingCapacityService parkingCapacityService;
 
         public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService,
@@ -25,6 +28,7 @@ namespace Garage2._0MVC.Controllers
         {
             this.db = db;
             this.parkingService = parkingService;
+            this.memberSelectService = memberSelectService;
             this.parkingCapacityService = parkingCapacityService;
         }
 
@@ -92,7 +96,22 @@ namespace Garage2._0MVC.Controllers
             var vehicleModel = await db.VehicleModel
                 .Include(v => v.Member)
                 .Include(v => v.VehicleType)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Select(v => new VehicleDetailsViewModel
+                {
+                    Id = v.Id,
+                    Type = v.Type,
+                    RegNum = v.RegNum,
+                    Brand = v.Brand,
+                    Model = v.Model,
+                    Color = v.Color,
+                    NumberWeels = v.NumWheels,
+                    Owner = v.Member.FullName,
+                    ArrivalTime = v.ArrivalTime
+
+                })
+                .FirstOrDefaultAsync(v => v.Id == id);
+                
+
             if (vehicleModel == null)
             {
                 return NotFound();
@@ -207,14 +226,26 @@ namespace Garage2._0MVC.Controllers
                 return NotFound();
             }
 
-            var vehicleModel = await db.VehicleModel.FindAsync(id);
-            if (vehicleModel == null)
+                //.Include(m => m.Member)
+                //.ThenInclude(v => v.FullName)
+            var vehicleEditViewModel = await db.VehicleModel
+                .Include(m => m.Member)
+                .Select(v => new VehicleEditViewModel
+                {
+                    Id = v.Id,
+                    Color = v.Color,
+                    Brand = v.Brand,
+                    Model = v.Model,
+                    MemberId = v.MemberId
+                    
+                }).FirstOrDefaultAsync(v => v.Id == id);
+
+            if (vehicleEditViewModel == null)
             {
                 return NotFound();
             }
-            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
-            return View(vehicleModel);
+            
+            return View(vehicleEditViewModel);
         }
 
         // POST: VehicleModels2/Edit/5
@@ -222,23 +253,41 @@ namespace Garage2._0MVC.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,RegNum,Color,Brand,Model,NumWheels,ArrivalTime,VehicleTypeId,MemberId")] VehicleModel vehicleModel)
+        public async Task<IActionResult> Edit(int id, VehicleEditViewModel vehicleEditViewModel)
         {
-            if (id != vehicleModel.Id)
+            if (id != vehicleEditViewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var vehicle = new VehicleModel
+                {
+                    Id = vehicleEditViewModel.Id,
+                    Color = vehicleEditViewModel.Color,
+                    Brand = vehicleEditViewModel.Brand,
+                    Model = vehicleEditViewModel.Model,
+                    MemberId = vehicleEditViewModel.MemberId
+
+                    
+                };
                 try
                 {
-                    db.Update(vehicleModel);
+                   
+                    db.Entry(vehicle).State = EntityState.Modified;
+                    db.Entry(vehicle).Property(v => v.ArrivalTime).IsModified = false;
+                    db.Entry(vehicle).Property(v => v.RegNum).IsModified = false;
+                    db.Entry(vehicle).Property(v => v.Type).IsModified = false;
+                    db.Entry(vehicle).Property(v => v.VehicleTypeId).IsModified = false;
+
+
+
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VehicleModelExists(vehicleModel.Id))
+                    if (!VehicleModelExists(vehicle.Id))
                     {
                         return NotFound();
                     }
@@ -249,13 +298,12 @@ namespace Garage2._0MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(db.Member, "Id", "Id", vehicleModel.MemberId);
-            ViewData["VehicleTypeId"] = new SelectList(db.VehicleType, "Id", "Id", vehicleModel.VehicleTypeId);
-            return View(vehicleModel);
+            
+            return View(vehicleEditViewModel);
         }
 
-        // GET: VehicleModels2/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: VehicleModels2/Unpark/5
+        public async Task<IActionResult> Unpark(int? id)
         {
             if (id == null)
             {
@@ -274,10 +322,10 @@ namespace Garage2._0MVC.Controllers
             return View(vehicleModel);
         }
 
-        // POST: VehicleModels2/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: VehicleModels2/Unpark/5
+        [HttpPost, ActionName("Unpark")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> UnparkConfirmed(int id)
         {
             var vehicleModel = await db.VehicleModel.FindAsync(id);
 
@@ -297,6 +345,36 @@ namespace Garage2._0MVC.Controllers
             //await db.VehicleModelParkingSpaces.Include(v => v.ParkingSpace).FirstOrDefaultAsync(v => v.VehicleModelId == id);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+        // GET: Receipt
+        public async Task<IActionResult> Receipt(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var vehicleModel = await db.VehicleModel
+                .Include(m => m.Member)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (vehicleModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(vehicleModel);
+        }
+        // GET: Print receipt
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> Print(int id)
+        {
+            var vehicleModel = await db.VehicleModel
+                .Include(m => m.Member)
+                .FirstOrDefaultAsync(m => m.Id == id);
+               
+
+            HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+            return View(vehicleModel);
         }
 
         private bool VehicleModelExists(int id)
