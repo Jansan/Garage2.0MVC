@@ -1,5 +1,6 @@
 ﻿using Garage2._0MVC.Data;
 using Garage2._0MVC.Models.ViewModels;
+using Garage2._0MVC.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -13,13 +14,15 @@ namespace Garage2._0MVC.ViewComponents
     public class ParkingViewComponent : ViewComponent
     {
         private readonly Garage2_0MVCContext db;
+        private readonly IParkingCapacityService parking;
 
         // Sets Total Parking Space in this class
         private const int totalParkingSpaces = 5;
 
-        public ParkingViewComponent(Garage2_0MVCContext db)
+        public ParkingViewComponent(Garage2_0MVCContext db, IParkingCapacityService parking)
         {
             this.db = db;
+            this.parking = parking;
         }
 
         // Calculates parking space left & total parking ppaces
@@ -27,8 +30,16 @@ namespace Garage2._0MVC.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var total = totalParkingSpaces;
-            var vehicles = await db.VehicleModel.CountAsync();
-            var space = totalParkingSpaces - vehicles;
+            var vehicles = await db.VehicleModel.Include(v => v.VehicleType).Select(v => v.VehicleType.Capacity).ToListAsync();
+            double sum = 0;
+
+            foreach (var item in vehicles)
+            {
+                sum += item; 
+            }
+            //var vehicles = await db.VehicleModel.CountAsync();
+
+            var space = totalParkingSpaces - sum;
 
             var model = new ParkingViewModel
             {

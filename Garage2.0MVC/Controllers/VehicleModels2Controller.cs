@@ -19,26 +19,23 @@ namespace Garage2._0MVC.Controllers
         private readonly Garage2_0MVCContext db;
         private readonly IParkingService parkingService;
         private readonly IParkingCapacityService parkingCapacityService;
-        private readonly ITypeSelectService typeSelectService;
 
         public VehicleModels2Controller(Garage2_0MVCContext db, IParkingService parkingService,
-            IParkingCapacityService parkingCapacityService, ITypeSelectService typeSelectService)
+            IParkingCapacityService parkingCapacityService)
         {
             this.db = db;
             this.parkingService = parkingService;
             this.parkingCapacityService = parkingCapacityService;
-            this.typeSelectService = typeSelectService;
         }
 
         // GET: VehicleModels2
-        public async Task<IActionResult> Index(/*string regSearch, VehicleIndexViewModel viewModel*/)
+        public async Task<IActionResult> Index()
         {
             var vehicles = await GetVehicleList();
 
             var model = new VehicleIndexViewModel
             {
                 Vehicles = vehicles,
-                Types = await GetTypesAsync()
             };
 
             return View(model);
@@ -63,26 +60,10 @@ namespace Garage2._0MVC.Controllers
             var model = new VehicleIndexViewModel
             {
                 Vehicles = vehicles,
-                Types = await GetTypesAsync()
             };
 
             return View(nameof(Index), model);
         }
-
-        public async Task<IEnumerable<SelectListItem>> GetTypesAsync()
-        {
-            return await db.VehicleModel
-                        .Select(v => v.Type)
-                        .Distinct()
-                        .Select
-                        (v => new SelectListItem
-                        {
-                            Text = v.ToString(),
-                            Value = v.ToString()
-                        })
-                        .ToListAsync();
-        }
-
 
         private async Task<List<VehicleListViewModel>> GetVehicleList()
         {

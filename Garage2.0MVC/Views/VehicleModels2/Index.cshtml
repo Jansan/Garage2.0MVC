@@ -1,5 +1,5 @@
 ﻿@model VehicleIndexViewModel
-@inject Garage2._0MVC.Services.ITypeSelectService service
+@inject Garage2._0MVC.Services.IFilterService service
 
 @{
     ViewData["Title"] = "Index";
@@ -16,7 +16,7 @@
     <div class="input-group mb-3">
         <input name="regSearch" type="text" class="form-control" placeholder="Search on registration number..." />
         <div class="input-group-append">
-            <select asp-for="Type" asp-items="@await service.GetTypesAsync()" class="form-control">
+            <select asp-for="Type" asp-items="@await service.GetFilterAsync()" class="form-control">
                 <option selected="selected" value="">All types</option>
             </select>
         </div>
