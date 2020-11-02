@@ -71,7 +71,8 @@ namespace Garage2._0MVC.Controllers
 
         private async Task<List<VehicleListViewModel>> GetVehicleList()
         {
-            return await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType).Include(v => v.VehicleModelParkingSpaces).ThenInclude(p => p.ParkingSpace)
+            return await db.VehicleModel.Include(v => v.Member).Include(v => v.VehicleType)
+                .Include(v => v.VehicleModelParkingSpaces).ThenInclude(p => p.ParkingSpace)
                 .Select(v => new VehicleListViewModel
                 {
                     Id = v.Id,
@@ -171,9 +172,6 @@ namespace Garage2._0MVC.Controllers
 
                 }
 
-                db.VehicleModel.Include(v => v.VehicleModelParkingSpaces).ThenInclude(v => v.ParkingSpace);
-                var space = parkingService.GetCurrentParking();
-                var vehicleCapacity = parkingCapacityService.GetVehicleCapacity();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -193,18 +191,18 @@ namespace Garage2._0MVC.Controllers
             }
             if (capacity == 2)
             {
-                for (int i = 0; i < result.Count() - 2; i++)
+                for (int i = 0; i < result.Count() - 1; i++)   
                 {
-                    if (result.ElementAt(i + 1) - result.ElementAt(i) == 1 && result.ElementAt(i + 2) - result.ElementAt(i + 1) == 1)
+                    if (result.ElementAt(i + 1) - result.ElementAt(i) == 1)
                         return result.ElementAt(i);
                 }
             }
             if (capacity == 3)
             {
-                for (int i = 0; i < result.Count() - 3; i++)
+                for (int i = 0; i < result.Count() - 2; i++) 
                 {
                     if (result.ElementAt(i + 1) - result.ElementAt(i) == 1 && result.ElementAt(i + 2) - result.ElementAt(i + 1) == 1
-                        && result.ElementAt(i + 3) - result.ElementAt(i + 2) == 1)
+                        ) 
                         return result.ElementAt(i);
                 }
             }
